@@ -40,7 +40,7 @@ namespace CodeGen
 
 	void Code::Hlt()
 	{
-		m_code.push_back((int)Opcode::htl_code);
+		m_code.push_back((int)Opcode::htl);
 	}
 
 	void Code::Push()

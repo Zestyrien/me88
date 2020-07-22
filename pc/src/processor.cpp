@@ -51,106 +51,106 @@ std::bitset<8> GetPart(const std::bitset<16> &one, bool high)
 
 Star GetFirstExecutionState(const std::bitset<8> &code)
 {
-	int opcode = (int)code.to_ulong();
+	Opcode opcode = (Opcode)code.to_ulong();
 	switch (opcode)
 	{
-	case 0b00010100:
+	case Opcode::nop:
 		return Star::nop0;
-	case 0b00010101:
+	case Opcode::htl:
 		return Star::hlt0;
-	case 0b00000001: //mov al,ah
+	case Opcode::mov_al_ah:
 		return Star::ldah0;
-	case 0b00000010: //mov ah,al
+	case Opcode::mov_ah_al:
 		return Star::ldal0;
-	case 0b00000111: //mov ax,ds
+	case Opcode::mov_ax_ds:
 		return Star::ldds0;
-	case 0b00001000: //mov ax,ss
+	case Opcode::mov_ax_ss:
 		return Star::ldss0;
-	case 0b00001001: //mov ax,sp
+	case Opcode::mov_ax_sp:
 		return Star::ldsp0;
-	case 0b00001010: //mov ax,di
+	case Opcode::mov_ax_di:
 		return Star::lddi0;
-	case 0b00000011: //mov ds,ax
+	case Opcode::mov_ds_ax:
 		return Star::ldax0;
-	case 0b00000100: //mov ss,ax
+	case Opcode::mov_ss_ax:
 		return Star::ldax1;
-	case 0b00000101: //mov sp,ax
+	case Opcode::mov_sp_ax:
 		return Star::ldax2;
-	case 0b00000110: //mov di,ax
+	case Opcode::mov_di_ax:
 		return Star::ldax3;
-	case 0b01000000: //mov al,ds:(di)
-	case 0b10100000: //mov al,ds:offset
+	case Opcode::mov_al_ds$di:
+	case Opcode::mov_al_ds$offset: 
 		return Star::ld0;
-	case 0b10100001: //out al,offset
+	case Opcode::out_al_offset:
 		return Star::out0;
-	case 0b00100001: //cmp ds:(di),al
-	case 0b00100010: //add
-	case 0b00100011: //sub
-	case 0b00100100: //and
-	case 0b00100101: //or
-	case 0b01100001: //cmp $operand,al
-	case 0b01100010: //add
-	case 0b01100011: //sub
-	case 0b01100100: //and
-	case 0b01100101: //or
-	case 0b10000001: //cmp
-	case 0b10000010: //add
-	case 0b10000011: //sub
-	case 0b10000100: //and
-	case 0b10000101: //or
-	case 0b00010001: //not al
-	case 0b00001101: //shl al
-	case 0b00001110: //sal al
-	case 0b00001111: //shr al
-	case 0b00010000: //sar al
+	case Opcode::cmp_ds$di_al: 
+	case Opcode::add_ds$di_al: 
+	case Opcode::sub_ds$di_al: 
+	case Opcode::and_ds$di_al: 
+	case Opcode::or_ds$di_al: 
+	case Opcode::cmp_operand_al:
+	case Opcode::add_operand_al:
+	case Opcode::sub_operand_al:
+	case Opcode::and_operand_al:
+	case Opcode::or_operand_al: 
+	case Opcode::cmp_ds$offset_al:
+	case Opcode::add_ds$offset_al:
+	case Opcode::sub_ds$offset_al:
+	case Opcode::and_ds$offset_al:
+	case Opcode::or_ds$offset_al: 
+	case Opcode::not_al:
+	case Opcode::shl_al:
+	case Opcode::sal_al: 
+	case Opcode::shr_al: 
+	case Opcode::sar_al: 
 		return Star::arit_log0;
-	case 0b00100000: //mov ds:(di),al
-	case 0b01100000: //mov $operand,al
-	case 0b10000000: //mov ds:offset,al
-	case 0b10000110: //in offset,al
+	case Opcode::mov_ds$di_al: 
+	case Opcode::mov_operand_al: 
+	case Opcode::mov_ds$offset_al:
+	case Opcode::in_offset_al:
 		return Star::ldal1;
-	case 0b11000000: //jmp cs:offset
-	case 0b11000001: //ja
-	case 0b11000010: //jae
-	case 0b11000011: //jb
-	case 0b11000100: //jbe
-	case 0b11000101: //jc
-	case 0b11000110: //je
-	case 0b11000111: //jg
-	case 0b11001000: //jge
-	case 0b11001001: //jl
-	case 0b11001010: //jle
-	case 0b11001011: //jnc
-	case 0b11001100: //jne
-	case 0b11001101: //jno
-	case 0b11001110: //jns
-	case 0b11001111: //jnz
-	case 0b11010000: //jo
-	case 0b11010001: //js
-	case 0b11010010: //jz
-	case 0b11100000: //jmp selector:offset
+	case Opcode::jmp_cs_offset: 
+	case Opcode::ja_cs_offset: 
+	case Opcode::jae_cs_offset:
+	case Opcode::jb_cs_offset: 
+	case Opcode::jbe_cs_offset:
+	case Opcode::jc_cs_offset: 
+	case Opcode::je_cs_offset: 
+	case Opcode::jg_cs_offset: 
+	case Opcode::jge_cs_offset:
+	case Opcode::jl_cs_offset: 
+	case Opcode::jle_cs_offset: 
+	case Opcode::jnc_cs_offset: 
+	case Opcode::jne_cs_offset: 
+	case Opcode::jno_cs_offset: 
+	case Opcode::jns_cs_offset: 
+	case Opcode::jnz_cs_offset: 
+	case Opcode::jo_cs_offset: 
+	case Opcode::js_cs_offset: 
+	case Opcode::jz_cs_offset: 
+	case Opcode::jmp_selector$offset: 
 		return Star::jmp0;
-	case 0b00001011: //push al
+	case Opcode::push_al: 
 		return Star::push0;
-	case 0b00001100: //pop al
+	case Opcode::pop_al: 
 		return Star::pop0;
-	case 0b11010011: //call cs:offset
-	case 0b11100001: //call selector:offset
+	case Opcode::call_cs_offset:
+	case Opcode::call_selector$offsett:
 		return Star::call0;
-	case 0b00010010: //retn
-	case 0b00010011: //retf
+	case Opcode::retn: 
+	case Opcode::retf: 
 		return Star::ret0;
-	case 0b01100110: //int operand
+	case Opcode::int_operand:
 		return Star::int0;
-	case 0b00010110: //iret
+	case Opcode::iret:
 		return Star::iret0;
-	case 0b00010111: //cli
+	case Opcode::cli:
 		return Star::cli0;
-	case 0b00011000: //sli
+	case Opcode::sti:
 		return Star::sti0;
-	case 0b00011001: //ldpsr
+	case Opcode::ldpsr:
 		return Star::ldpsr0;
-	case 0b00011010: //stum
+	case Opcode::stum:
 		return Star::stum0;
 	}
 	return Star::nop0;

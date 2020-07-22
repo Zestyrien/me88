@@ -38,20 +38,20 @@ bool Instructions::IsNOT(const std::bitset<8>& code)
 
 bool Instructions::IsSHL(const std::bitset<8>& code)
 {
-	return code == (int)Opcode::shl_code;
+	return code == (int)Opcode::shl_al;
 }
 
 bool Instructions::IsSAL(const std::bitset<8>& code)
 {
-	return code == (int)Opcode::sal_code;
+	return code == (int)Opcode::sal_al;
 }
 
 bool Instructions::IsSHR(const std::bitset<8>& code)
 {
-	return code == (int)Opcode::shr_code;
+	return code == (int)Opcode::shr_al;
 }
 
 bool Instructions::IsSAR(const std::bitset<8>& code)
 {
-	return code == (int)Opcode::sar_code;
+	return code == (int)Opcode::sar_al;
 }
