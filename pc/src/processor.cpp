@@ -3,7 +3,7 @@
 #include "../../common/opcode.h"
 
 #define SIZE_ALU 8
-Processor::Processor(Bus& bus) : m_Bus(bus)
+Processor::Processor(Bus &bus) : m_Bus(bus)
 {
 }
 
@@ -598,8 +598,190 @@ void Processor::OnClock()
 		m_MR_ = true;
 		m_STAR = GetIF() ? Star::pre_tipo0 : Star::fetch0;
 		break;
-		//TO DO int0
-		//TO DO iret0
+	case Star::int0:
+		if (GetUS())
+		{
+			auto ss = m_SS;
+			m_SS = m_PREV_SS;
+			m_PREV_SS = ss;
+			auto sp = m_SP;
+			m_SP = m_PREV_SP;
+			m_PREV_SP = sp;
+		}
+		m_STAR = Star::int1;
+		break;
+	case Star::int1:
+		m_SP = m_SP.to_ulong() - 1;
+		m_MAR = ComputePhysicalAddress(m_SS, m_SP);
+		m_DIR = true;
+		m_MBR = m_F.to_ulong();
+		m_STAR = Star::int2;
+		break;
+	case Star::int2:
+		m_MW_ = false;
+		m_STAR = Star::int3;
+		break;
+	case Star::int3:
+		m_MW_ = true;
+		m_F = 0;
+		m_STAR = Star::int3;
+		break;
+	case Star::int4:
+		m_SP = m_SP.to_ulong() - 1;
+		m_MAR = ComputePhysicalAddress(m_SS, m_SP);
+		m_MBR = GetPart(m_IP, true);
+		m_STAR = Star::int5;
+		break;
+	case Star::int5:
+		m_MW_ = false;
+		m_STAR = Star::int6;
+		break;
+	case Star::int6:
+		m_MW_ = true;
+		m_STAR = Star::int7;
+		break;
+	case Star::int7:
+		m_SP = m_SP.to_ulong() - 1;
+		m_MAR = ComputePhysicalAddress(m_SS, m_SP);
+		m_MBR = GetPart(m_IP, false);
+		m_STAR = Star::int8;
+		break;
+	case Star::int8:
+		m_MW_ = false;
+		m_STAR = Star::int9;
+		break;
+	case Star::int9:
+		m_MW_ = true;
+		m_STAR = Star::int10;
+		break;
+	case Star::int10:
+		m_SP = m_SP.to_ulong() - 1;
+		m_MAR = ComputePhysicalAddress(m_SS, m_SP);
+		m_MBR = GetPart(m_CS, true);
+		m_STAR = Star::int11;
+		break;
+	case Star::int11:
+		m_MW_ = false;
+		m_STAR = Star::int12;
+		break;
+	case Star::int12:
+		m_MW_ = true;
+		m_STAR = Star::int13;
+		break;
+	case Star::int13:
+		m_SP = m_SP.to_ulong() - 1;
+		m_MAR = ComputePhysicalAddress(m_SS, m_SP);
+		m_MBR = GetPart(m_CS, false);
+		m_STAR = Star::int14;
+		break;
+	case Star::int14:
+		m_MW_ = false;
+		m_STAR = Star::int15;
+		break;
+	case Star::int15:
+		m_MW_ = true;
+		m_STAR = Star::int16;
+		break;
+	case Star::int16:
+		m_DIR = false;
+		m_MAR = m_SOURCE.to_ulong() << 2;
+		m_MR_ = false;
+		m_STAR = Star::int17;
+		break;
+	case Star::int17:
+		m_STAR = Star::int18;
+		break;
+	case Star::int18:
+		m_MBR = m_d7_d0;
+		m_MAR = m_MAR.to_ulong() + 1;
+		m_STAR = Star::int19;
+		break;
+	case Star::int19:
+		m_STAR = Star::int20;
+		break;
+	case Star::int20:
+		m_IP = Concat(m_d7_d0, m_MBR);
+		m_MAR = m_MAR.to_ulong() + 1;
+		m_STAR = Star::int21;
+		break;
+	case Star::int21:
+		m_STAR = Star::int22;
+		break;
+	case Star::int22:
+		m_MBR = m_d7_d0;
+		m_MAR = m_MAR.to_ulong() + 1;
+		m_STAR = Star::int23;
+		break;
+	case Star::int23:
+		m_STAR = Star::int24;
+		break;
+	case Star::int24:
+		m_CS = Concat(m_d7_d0, m_MBR);
+		m_MR_ = true;
+		m_STAR = Star::fetch0;
+		break;
+	case Star::iret0:
+		m_MAR = ComputePhysicalAddress(m_SS, m_SP);
+		m_SP = m_SP.to_ulong() + 1;
+		m_MR_ = false;
+		m_STAR = Star::iret1;
+		break;
+	case Star::iret1:
+		m_STAR = Star::iret2;
+		break;
+	case Star::iret2:
+		m_MBR = m_d7_d0;
+		m_MAR = ComputePhysicalAddress(m_SS, m_SP);
+		m_SP = m_SP.to_ulong() + 1;
+		m_STAR = Star::iret3;
+		break;
+	case Star::iret3:
+		m_STAR = Star::iret4;
+		break;
+	case Star::iret4:
+		m_CS = Concat(m_d7_d0, m_MBR);
+		m_MAR = ComputePhysicalAddress(m_SS, m_SP);
+		m_SP = m_SP.to_ulong() + 1;
+		m_STAR = Star::iret5;
+		break;
+	case Star::iret5:
+		m_STAR = Star::iret6;
+		break;
+	case Star::iret6:
+		m_MBR = m_d7_d0;
+		m_MAR = ComputePhysicalAddress(m_SS, m_SP);
+		m_SP = m_SP.to_ulong() + 1;
+		m_STAR = Star::iret7;
+		break;
+	case Star::iret7:
+		m_STAR = Star::iret8;
+		break;
+	case Star::iret8:
+		m_IP = Concat(m_d7_d0, m_MBR);
+		m_MAR = ComputePhysicalAddress(m_SS, m_SP);
+		m_SP = m_SP.to_ulong() + 1;
+		m_STAR = Star::iret9;
+		break;
+	case Star::iret9:
+		m_STAR = Star::iret10;
+		break;
+	case Star::iret10:
+		m_F = m_d7_d0.to_ulong();
+		m_MR_ = true;
+		m_STAR = Star::iret11;
+		break;
+	case Star::iret11:
+		if (GetUS())
+		{
+			auto ss = m_SS;
+			m_SS = m_PREV_SS;
+			m_PREV_SS = ss;
+			auto sp = m_SP;
+			m_SP = m_PREV_SP;
+			m_PREV_SP = sp;
+		}
+		m_STAR = Star::fetch0;
+		break;
 	case Star::cli0:
 		SetIF(false);
 		m_STAR = Star::fetch0;
@@ -630,7 +812,7 @@ void Processor::OnClock()
 		m_STAR = Star::int0;
 		break;
 	case Star::pre_tipo0:
-		m_DIR = 0;
+		m_DIR = false;
 		m_INTA = 1;
 		m_STAR = m_intr ? Star::pre_tipo0 : Star::pre_tipo1;
 		break;

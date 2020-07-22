@@ -255,6 +255,8 @@ private:
 	bool GetIF() const;
 	bool GetUS() const;
 
+	std::bitset<8> GetFlags();
+
 	bool IsConditionMatch();
 	void ExecuteALU();
 };
