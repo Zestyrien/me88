@@ -12,10 +12,11 @@ add_executable(
 	main.cpp
 	lexy.cpp
 	token.cpp
-	parser.cpp
-	tree.cpp
-	symboltable.cpp
-	codegenerator.cpp
+  ast.cpp
+  semantic.cpp
+  tree.cpp
+  symbolstable.cpp
+  codegenerator.cpp
 )
 
 

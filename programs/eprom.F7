@@ -1,14 +1,11 @@
-u8 x; 
+u8 x := 0; 
 u8 y := 5;
 
-if y > 4 then
-	u8 z := 3;
-	x := y - z;
-else
-	x := y + 10;
-endif
-
 while y > 0 loop
-	x := x + 1;
+  u8 z := 3;
+  while z > 0 loop
+    x := x + 1;
+    z := z - 1;
+  endloop
 	y := y - 1;
 endloop
