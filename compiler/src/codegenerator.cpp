@@ -80,9 +80,45 @@ void CodeGenerator::EvalBelowDSDI(const std::string &variable) {
   ParseALEval();
 }
 
+void CodeGenerator::EvalAboveDSDI(const std::string &variable) {
+  CmpDSDI(variable);
+  m_code.push_back((int)Opcode::ja_cs_offset);
+  ParseALEval();
+}
+
+void CodeGenerator::EvalEqualDSDI(const std::string &variable) {
+  CmpDSDI(variable);
+  m_code.push_back((int)Opcode::je_cs_offset);
+  ParseALEval();
+}
+
+void CodeGenerator::EvalNotEqualDSDI(const std::string &variable) {
+  CmpDSDI(variable);
+  m_code.push_back((int)Opcode::jne_cs_offset);
+  ParseALEval();
+}
+
 void CodeGenerator::EvalBelow(int op) {
   Cmp(op);
   m_code.push_back((int)Opcode::jb_cs_offset);
+  ParseALEval();
+}
+
+void CodeGenerator::EvalAbove(int op) {
+  Cmp(op);
+  m_code.push_back((int)Opcode::ja_cs_offset);
+  ParseALEval();
+}
+
+void CodeGenerator::EvalEqual(int op) {
+  Cmp(op);
+  m_code.push_back((int)Opcode::je_cs_offset);
+  ParseALEval();
+}
+
+void CodeGenerator::EvalNotEqual(int op) {
+  Cmp(op);
+  m_code.push_back((int)Opcode::jne_cs_offset);
   ParseALEval();
 }
 
@@ -223,6 +259,12 @@ void ParseExpression8Bits(const std::shared_ptr<Node> &node,
       code.SubDSDI(lfvalue);
     } else if (ndvalue == ">") {
       code.EvalBelowDSDI(lfvalue);
+    } else if (ndvalue == "<") {
+      code.EvalAboveDSDI(lfvalue);
+    } else if (ndvalue == "==") {
+      code.EvalEqualDSDI(lfvalue);
+    } else if (ndvalue == "!=") {
+      code.EvalNotEqualDSDI(lfvalue);
     }
   } else {
     if (ndvalue == "+") {
@@ -231,6 +273,12 @@ void ParseExpression8Bits(const std::shared_ptr<Node> &node,
       code.Sub(std::stoi(lfvalue));
     } else if (ndvalue == ">") {
       code.EvalBelow(std::stoi(lfvalue));
+    } else if (ndvalue == "<") {
+      code.EvalAbove(std::stoi(lfvalue));
+    } else if (ndvalue == "==") {
+      code.EvalEqual(std::stoi(lfvalue));
+    } else if (ndvalue == "!=") {
+      code.EvalNotEqual(std::stoi(lfvalue));
     }
   }
 }

@@ -26,7 +26,7 @@ Use -d -D to print the output.
 
 # TO DO in no particular order
 
-* == != < <= >= 
+* <= >= 
 * functions
 * 8 bit integers
 * booleans

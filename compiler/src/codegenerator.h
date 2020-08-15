@@ -20,7 +20,15 @@ public:
   void SubDSDI(const std::string &variable);
   void CmpDSDI(const std::string &variable);
   void EvalBelowDSDI(const std::string &variable);
+  void EvalBelowEqDSDI(const std::string &variable);
+  void EvalAboveDSDI(const std::string &variable);
+  void EvalEqualDSDI(const std::string &variable);
+  void EvalNotEqualDSDI(const std::string &variable);
   void EvalBelow(int op);
+  void EvalAbove(int op);
+  void EvalAboveEq(int op);
+  void EvalEqual(int op);
+  void EvalNotEqual(int op);
   void JmpNE(int offset);
   void JmpNE();
   void Jmp(int offset);
