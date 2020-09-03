@@ -1,0 +1,16 @@
+
+# void write : u8 x, u8 y {
+#  x := 55;
+#  u8 z := 9;
+# }
+
+u8 a := 1;
+if a > 0 then
+  u8 z := 8;
+  a := a + 8;
+  if a > 0 then
+    u8 k := 100;
+  else
+    a := 5;
+  endif
+endif

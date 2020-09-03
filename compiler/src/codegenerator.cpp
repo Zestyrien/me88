@@ -392,16 +392,16 @@ void ParseScope(const std::shared_ptr<Tree> &tree, const SymbolsTable &symbols,
   }
 }
 
-std::vector<std::bitset<8>>
-GenerateCode(const Tree &ast, const SymbolsTable &symbols, bool debug) {
+std::vector<std::bitset<8>> GenerateCode(const Tree &ast,
+                                         const SymbolsTable &symbols) {
 
   CodeGenerator code;
   ParseScope(std::make_shared<Tree>(ast), symbols, code);
   code.Hlt();
 
-  if (debug) {
-    code.Print();
-  }
+#ifndef NDEBUG
+  code.Print();
+#endif
 
   return code.GetCode();
 }

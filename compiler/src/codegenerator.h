@@ -55,5 +55,5 @@ private:
 };
 
 std::vector<std::bitset<8>> GenerateCode(const Tree &program,
-                                         const SymbolsTable &symbols,
+                                         const SymbolsTable &symbols);
                                          bool debug = false);

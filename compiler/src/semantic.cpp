@@ -315,14 +315,14 @@ bool GenerateSymbolsForTree(const std::shared_ptr<Tree> tree,
   return true;
 }
 
-std::tuple<bool, SymbolsTable> AnalyzeSemantic(const Tree &tree, bool debug) {
+std::tuple<bool, SymbolsTable> AnalyzeSemantic(const Tree &tree) {
   auto table = SymbolsTable();
 
   auto success = GenerateSymbolsForTree(std::make_shared<Tree>(tree), table);
 
-  if (debug) {
-    table.Print();
-  }
+#ifndef NDEBUG
+  table.Print();
+#endif
 
   return {success, table};
 }

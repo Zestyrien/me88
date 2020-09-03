@@ -11,39 +11,43 @@
 #include <iostream>
 #include <memory>
 
+#include <unistd.h>
+
 int main(int argc, char *argv[]) {
+#ifdef NDEBUG
   if (argc == 1) {
     spdlog::error("Missing file name.");
     return 0;
   }
+  auto fileName = argv[1];
+#endif
 
-  bool debug = false;
-  if (argc > 2) {
-    debug = argv[2] == std::string("-d") || argv[2] == std::string("-D");
-  }
-
-  auto [validToks, tokens] = Lexer::GetTokensFromFile(argv[1]);
+#ifndef NDEBUG
+  auto debug = true;
+  auto fileName = "./src/debugprograms/debug.F7";
+#endif
+  auto [validToks, tokens] = Lexer::GetTokensFromFile(fileName);
 
   if (!validToks) {
     return 0;
   }
 
-  if (debug) {
-    Lexer::PrintTokens(tokens);
-  }
+#ifndef NDEBUG
+  Lexer::PrintTokens(tokens);
+#endif
 
-  auto [validProg, AST] = CreateAST(tokens, debug);
+  auto [validProg, AST] = CreateAST(tokens);
   if (!validProg) {
     return 0;
   }
 
-  auto [validSemantic, symbols] = AnalyzeSemantic(AST, debug);
+  auto [validSemantic, symbols] = AnalyzeSemantic(AST);
   if (!validSemantic) {
     return 0;
   }
 
-  std::ofstream outfile(std::string(argv[1]) + ".bin");
-  auto machinecode = GenerateCode(AST, symbols, debug);
+  std::ofstream outfile(std::string(fileName) + ".bin");
+  auto machinecode = GenerateCode(AST, symbols);
 
   for (auto code : machinecode) {
     outfile << code << std::endl;

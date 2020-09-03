@@ -445,7 +445,7 @@ bool ParseTree(const std::vector<Token> &tokens, Tree &tree, int &index) {
   return success;
 }
 
-std::tuple<bool, Tree> CreateAST(const std::vector<Token> &tokens, bool debug) {
+std::tuple<bool, Tree> CreateAST(const std::vector<Token> &tokens) {
   Tree tree(0);
   int index = 0;
   bool success = true;
@@ -455,9 +455,9 @@ std::tuple<bool, Tree> CreateAST(const std::vector<Token> &tokens, bool debug) {
     }
   }
 
-  if (debug) {
-    tree.Print();
-  }
+#ifndef NDEBUG
+  tree.Print();
+#endif
 
   return {success, tree};
 }
