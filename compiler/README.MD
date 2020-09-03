@@ -23,7 +23,7 @@ The language supported features
 
 The output will be 'path_to_your_F7_program/program.F7.bin'.
 
-Use -d -D to print the output.
+Debug build will print addition log and will use 'src/debugprograms/debug.F7', the output will be 'src/debugprograms/debug.F7.bin'.
 
 # TO DO in no particular order
 
