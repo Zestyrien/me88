@@ -81,11 +81,11 @@ std::string MemDevice::Dump(std::string title, bool caracters) const
 		if (!caracters)
 		{
 			stream << "[" << loc.first << "] ";
-			stream << std::hex << (int)loc.second.to_ulong() << " ";
+			stream << loc.second.to_ulong() << " ";
 		}
 		else
 		{
-			stream << (char)loc.second.to_ulong();
+			stream << loc.second.to_ulong();
 		}
 	}
 	stream << "\n";
