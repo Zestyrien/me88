@@ -23,6 +23,17 @@ Lexer::GetTokensFromFile(const std::string &filename) {
   std::string lastTok;
   int line = 1;
   while (file.get(c)) {
+
+    bool isComment = c == '#';
+    
+    if (isComment) {
+      while (file.get(c)) {
+        if (c == '\n') {
+          break;
+        }
+      }
+    }
+
     bool isendl = c == '\n';
     if (isspace(c) || isendl) {
       if (isendl) {

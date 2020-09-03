@@ -5,10 +5,11 @@
 This is the compiler for the ME88. There are a couple of examples for programs in the programs directory (.F7 extension).
 The language supported features
 	* unsigned 8 bits variables 
-	* if else statements 
+	* if else statements
 	* while loops
 	* scopes
 	* additions and subtractions
+  * comments
 
 # Installation 
 
@@ -29,16 +30,17 @@ Use -d -D to print the output.
 * <= >= 
 * functions
 * 8 bit integers
-* booleans
+* booleans ( maybe )
 * multiplication and division ( maybe )
 * precedence for the operators in expression 
 * parentheses in expressions
-* comments
 * implement an intermidiate language in order to add some optimization
 * add assembly support in order to write some primitives
 
 # Example program with all the features
 ```
+# '#' is for the comments
+
 u8 x; 
 u8 y := 5;
 
