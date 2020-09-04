@@ -4,11 +4,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # set the project name
-project(Compy)
+project(me88Compiler)
 
 # add the executable
 add_executable(
-	Compy
+	me88Compiler
 	main.cpp
 	lexy.cpp
 	token.cpp
@@ -19,7 +19,6 @@ add_executable(
   codegenerator.cpp
 )
 
-
 #link libs
 find_package(spdlog REQUIRED)
-target_link_libraries(Compy PRIVATE spdlog::spdlog)
+target_link_libraries(me88Compiler PRIVATE spdlog::spdlog)

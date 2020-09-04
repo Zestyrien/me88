@@ -19,7 +19,7 @@ The language supported features
 
 # Usage
 
-./Compy 'path_to_your_F7_program/program.F7'
+./me88Compiler 'path_to_your_F7_program/program.F7'
 
 The output will be 'path_to_your_F7_program/program.F7.bin'.
 
