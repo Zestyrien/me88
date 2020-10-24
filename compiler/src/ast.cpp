@@ -248,8 +248,8 @@ ParseWhile(const std::vector<Token> &tokens, const Tree &parentScope,
       return {false, nullptr};
     }
   }
-  
-  //remove endloop or in case of nested loop it will exit all loops
+
+  // remove endloop or in case of nested loop it will exit all loops
   index++;
 
   auto treeptr = std::make_shared<Tree>(whilebodytree);
@@ -369,6 +369,43 @@ ParseFunctionDefinition(const std::vector<Token> &tokens,
   return {true, functionNode};
 }
 
+std::tuple<bool, std::shared_ptr<Node>>
+ParseFunctionCall(const std::vector<Token> &tokens, const Tree &parentScope,
+                  int &index) {
+
+  auto functionNode =
+      std::make_shared<Node>(NodeType::FunctionCall, tokens[index].GetValue(),
+                             tokens[index].GetLine());
+
+  index = index + 2; // skip open bracket
+
+  auto functionArguments = std::make_shared<Tree>(parentScope.GetScopeId());
+
+  while (tokens[index].GetType() != TokenType::CloseBracket) {
+    auto [success, argument] = ParseExpression(tokens, parentScope, index);
+    if (!success) {
+      return {false, nullptr};
+    }
+
+    functionArguments->AddNode(argument);
+
+    if (tokens[index].GetType() == TokenType::Comma) {
+      index++;
+    } else if (tokens[index].GetType() != TokenType::CloseBracket) {
+      spdlog::error("Function call unexpected token {} at line {}",
+                    tokens[index].GetValue(), tokens[index].GetLine());
+
+      return {false, nullptr};
+    }
+  }
+
+  functionNode->SetTree(functionArguments);
+
+  index++; // skip close bracket
+
+  return {true, functionNode};
+}
+
 bool IsFunction(const std::vector<Token> &tokens, const int &index) {
   auto expectedColumn = index + 2;
   if (expectedColumn >= tokens.size())
@@ -397,15 +434,14 @@ ParseStatement(const std::vector<Token> &tokens, const Tree &tree, int &index) {
   switch (tokens[index].GetType()) {
   case TokenType::Type:
     if (IsFunction(tokens, index)) {
-      // TO DO
-      // return ParseFunctionDefinition(tokens, tree, index);
+      return ParseFunctionDefinition(tokens, tree, index);
     } else {
       return ParseDeclaration(tokens, tree, index);
     }
   case TokenType::Variable:
   case TokenType::Number:
     if (IsFunctionCall(tokens, index)) {
-      // 	return ParseFunctionCall(tokens, tree, index);
+      return ParseFunctionCall(tokens, tree, index);
     } else {
       return ParseExpression(tokens, tree, index);
     }

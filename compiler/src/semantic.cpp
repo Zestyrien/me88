@@ -41,6 +41,10 @@ bool IsDeclared(const std::shared_ptr<Node> &node, int scopeId,
     return false;
   }
 
+  if (node->GetType() == NodeType::Number) {
+    return true;
+  }
+
   return table.IsDeclared(scopeId, node->GetValue());
 }
 
@@ -151,71 +155,99 @@ bool ExpressionCheck(const std::shared_ptr<Node> &node, int scopeId,
 bool GenerateSymbolsForTree(const std::shared_ptr<Tree> tree,
                             SymbolsTable &table);
 
+bool GenerateSymbolsForNode(const std::shared_ptr<Node> &node, int scopeId,
+                            SymbolsTable &table);
+
 bool GenerateSymbolsForFunction(const std::shared_ptr<Node> &node, int scopeId,
                                 SymbolsTable &table) {
-  // TO DO error checks
-  // auto funBodyTree = node->GetTree();
 
-  // // TO DO generating simbols like this allows the following
-  // //
-  // //			void write : u8 pos, u8 val {
-  // //			 	u8 s := 5;
-  // //			 	s := s + x;
-  // //			}
-  // //			u8 x := 6;
-  // //
-  // //			x is defined after the function declaration and I don't
-  // // like it
+  // TO DO checks for function errors(?)
+  // No args, return type and so on
 
-  // auto funNameNode = node->GetLeft();
-  // auto name = funNameNode->GetValue();
+  auto ndFunName = node->GetLeft();
 
-  // auto typeNode = funNameNode->GetLeft();
-  // auto type = typeNode->GetValue();
+  auto ndFunType = ndFunName->GetLeft();
+  auto funType = ndFunType->GetValue();
 
-  // auto argsTree = funNameNode->GetTree();
-  // auto argsNodes = argsTree->GetNodes();
-  // std::vector<std::pair<std::string, std::string>> args;
-  // for (const auto &argnode : argsNodes) {
-  //   auto argname = argnode->GetValue();
-  //   auto argtype = argnode->GetLeft()->GetValue();
-  //   args.push_back(std::make_pair(argname, argtype));
-  // }
+  auto treeArgs = ndFunName->GetTree();
+  auto ndArgs = treeArgs->GetNodes();
 
-  // auto success = GenerateSymbolsForTree(funBodyTree, table, args);
-  // if (!success) {
-  //   return false;
-  // }
-  // funBodyTree->SetScope(treescope);
-  // table.AddFunction(type, name, args, scopeId);
+  auto IsArgument = [ndArgs](const std::string &name) {
+    for (const auto &ndArg : ndArgs) {
+      if (name == ndArg->GetValue()) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  auto treeBody = node->GetTree();
+  auto functionScopeId = treeBody->GetScopeId();
+
+  auto funName = ndFunName->GetValue();
+  auto parentScopeId = treeBody->GetParentScopeId();
+
+  std::vector<std::pair<std::string, std::string>> arguments;
+  for (const auto &ndArg : ndArgs) {
+    arguments.push_back(
+        std::make_pair(ndArg->GetLeft()->GetValue(), ndArg->GetValue()));
+  }
+
+  table.AddFunctionScope(functionScopeId, parentScopeId);
+  if (!table.AddFunctionDefinition(funName, funType, arguments,
+                                   parentScopeId)) {
+    // TO DO error case
+  }
+
+  int index = 0;
+  for (const auto &ndArg : ndArgs) {
+    auto argName = ndArg->GetValue();
+    auto ndType = ndArg->GetLeft();
+    auto argType = ndType->GetValue();
+    if (!table.AddFunctionArgumentToScope(argName, argType, index,
+                                          functionScopeId)) {
+      // TO DO error case
+    }
+    index++;
+  }
+
+  auto ndsBody = treeBody->GetNodes();
+  for (const auto &ndBody : ndsBody) {
+    if (!IsArgument(ndBody->GetValue())) {
+      auto success = GenerateSymbolsForNode(ndBody, functionScopeId, table);
+      if (!success) {
+        // TO DO error case
+        return false;
+      }
+    }
+  }
 
   return true;
 }
 
-bool IsValidFunctionCall(const std::shared_ptr<Node> &node, int scopeId,
-                         SymbolsTable &table) {
-  // auto funName = node->GetValue();
-  // if (table.IsDeclared(scopeId, funName)) {
-  //   table.AddFunctionOccurrence(funName, scopeId);
-  // } else {
-  //   spdlog::error("Undeclared function {}", funName);
-  //   return false;
-  // }
+bool GenerateSymbolsForFunctionCall(const std::shared_ptr<Node> &node,
+                                    int scopeId, SymbolsTable &table) {
 
-  // auto argsTree = node->GetTree();
-  // auto argsNodes = argsTree->GetNodes();
-  // std::vector<std::string> args;
-  // for (const auto &argnode : argsNodes) {
-  //   auto argtype = GetExpressionType(argnode, scopeId, table);
-  //   args.push_back(argtype);
-  // }
+  auto funName = node->GetValue();
+  auto funArgsTree = node->GetTree();
+  auto funArgsNodes = funArgsTree->GetNodes();
 
-  // if (table.AreValidFunctionArgs(scopeId, funName, args)) {
-  //   return true;
-  // } else {
-  //   spdlog::error("Arguments type mismatch for '{}' function call", funName);
-  //   return false;
-  // }
+  std::vector<std::string> argTypes;
+  for (const auto &ndArg : funArgsNodes) {
+    if (!IsDeclared(ndArg, scopeId, table)) {
+      spdlog::error("Undefined argument {} in function call {} at line {}",
+                    ndArg->GetValue(), funName, ndArg->GetLine());
+      return false;
+    }
+
+    argTypes.push_back(GetExpressionType(ndArg, scopeId, table));
+  }
+
+  if (!table.AddSymbolOccurrence(funName, scopeId, argTypes)) {
+    spdlog::error("Undeclared function {}", funName);
+    return false;
+  }
+
   return true;
 }
 
@@ -233,9 +265,9 @@ bool GenerateSymbolsForNode(const std::shared_ptr<Node> &node, int scopeId,
   }
 
   if (node->GetType() == NodeType::FunctionCall) {
-    // if (!GenerateSymbolsForFunctionCall(node, scopeId, table)) {
-    //   return false;
-    // }
+    if (!GenerateSymbolsForFunctionCall(node, scopeId, table)) {
+      return false;
+    }
 
     return true;
   }

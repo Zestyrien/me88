@@ -14,6 +14,7 @@ public:
   void LoadAL(int value);
   void LoadAL(const std::string &variable);
   void AddToStack(const std::string &variable);
+  void SetOutOfScope(const std::string &variable);
   void RemoveFromStack(const std::string &variable);
   void AddAssignement(const std::string &variable);
   void AddDSDI(const std::string &variable);
@@ -33,8 +34,14 @@ public:
   void JmpNE();
   void Jmp(int offset);
   void Jmp();
+  void CreateCallNear(const std::string &function);
+  void ReturnNear();
+  void CallNear(const std::string &function);
   int CreateJumpPlaceholder();
   void ReplaceJumpPlaceholder(int index);
+  void NewFrame();
+  void IncrementOffsetCount();
+  void RemoveFrame();
   void Add(int op);
   void Sub(int op);
   void Cmp(int op);
@@ -43,17 +50,26 @@ public:
   void Print();
   std::size_t Size();
 
+  std::unordered_map<std::string, std::shared_ptr<Tree>> m_funBodies;
+
 private:
+  struct StackFrame {
+    std::unordered_map<std::string, std::vector<int>> varToAddr;
+    int varCount;
+  };
+  
   void LoadVariableDSDI(const std::string &variable);
   void LoadOperand(std::bitset<8> op);
   void LoadAX(int value);
   void ParseALEval();
   void LoadOffset(int off);
+  void AddFunctionBody(const std::string &funName);
   std::vector<std::bitset<8>> m_code;
-  std::unordered_map<std::string, std::bitset<16>> m_varToAddr;
-  std::bitset<16> m_sp;
+  // std::bitset<16> m_sp;
+  int m_offsetFix = 0;
+  std::vector<StackFrame> m_frames;
+  std::unordered_map<std::string, std::bitset<16>> m_funBodyAddr;
 };
 
 std::vector<std::bitset<8>> GenerateCode(const Tree &program,
                                          const SymbolsTable &symbols);
-                                         bool debug = false);
