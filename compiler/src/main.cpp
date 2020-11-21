@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 
 #ifndef NDEBUG
   auto debug = true;
-  auto fileName = "../src/debugprograms/debug.F7";
+  auto fileName = "../compiler/src/debugprograms/debug.F7";
 #endif
   auto [validToks, tokens] = Lexer::GetTokensFromFile(fileName);
 

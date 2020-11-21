@@ -12,7 +12,7 @@ TEST(Lexer, GetTokensFromFile_InvalidFile) {
 }
 
 TEST(Lexer, GetTokensFromFile_ValidFile_AllTokens) {
-  std::string filename = "../src/tests/programs/lexerAllTokenTest.F7";
+  std::string filename = "../compiler/src/tests/programs/lexerAllTokenTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
   EXPECT_TRUE(validToks);

@@ -2,7 +2,7 @@
 
 #include "lexerTests.cpp"
 #include "astTests.cpp"
-#include "generateCodeTests.cpp"
+//#include "generateCodeTests.cpp"
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv); 

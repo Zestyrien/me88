@@ -16,7 +16,7 @@ TEST(AST, CreateAST_Empty) {
 }
 
 TEST(AST, CreateAST_VariableDeclaration) {
-  std::string filename = "../src/tests/programs/ast/variableDeclarationTest.F7";
+  std::string filename = "../compiler/src/tests/programs/ast/variableDeclarationTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
   EXPECT_TRUE(validToks);
@@ -49,7 +49,7 @@ TEST(AST, CreateAST_VariableDeclaration) {
 
 TEST(AST, CreateAST_VariableDeclarationAssignement) {
   std::string filename =
-      "../src/tests/programs/ast/variableDeclarationAssignementTest.F7";
+      "../compiler/src/tests/programs/ast/variableDeclarationAssignementTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
   EXPECT_TRUE(validToks);
@@ -88,7 +88,7 @@ TEST(AST, CreateAST_VariableDeclarationAssignement) {
 }
 
 TEST(AST, CreateAST_IfNoElse) {
-  std::string filename = "../src/tests/programs/ast/ifNoElse.F7";
+  std::string filename = "../compiler/src/tests/programs/ast/ifNoElse.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
   EXPECT_TRUE(validToks);
@@ -139,7 +139,7 @@ TEST(AST, CreateAST_IfNoElse) {
 }
 
 TEST(AST, CreateAST_IfElse) {
-  std::string filename = "../src/tests/programs/ast/ifElse.F7";
+  std::string filename = "../compiler/src/tests/programs/ast/ifElse.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
   EXPECT_TRUE(validToks);
@@ -202,7 +202,7 @@ TEST(AST, CreateAST_IfElse) {
 }
 
 TEST(AST, CreateAST_While) {
-  std::string filename = "../src/tests/programs/ast/while.F7";
+  std::string filename = "../compiler/src/tests/programs/ast/while.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
   EXPECT_TRUE(validToks);
@@ -238,7 +238,7 @@ TEST(AST, CreateAST_While) {
 }
 
 TEST(AST, Create_EmptyVoid) {
-  std::string filename = "../src/tests/programs/ast/emptyVoid.F7";
+  std::string filename = "../compiler/src/tests/programs/ast/emptyVoid.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
   EXPECT_TRUE(validToks);
@@ -284,7 +284,7 @@ TEST(AST, Create_EmptyVoid) {
 }
 
 TEST(AST, Create_VoidWithArgs) {
-  std::string filename = "../src/tests/programs/ast/voidWithArgs.F7";
+  std::string filename = "../compiler/src/tests/programs/ast/voidWithArgs.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
   EXPECT_TRUE(validToks);

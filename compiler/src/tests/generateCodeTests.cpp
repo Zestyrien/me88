@@ -2,7 +2,7 @@
 #include <unordered_map>
 
 #include "../ast.h"
-#include "../codegenerator.h"
+#include "../codeparse.h"
 #include "../lexy.h"
 #include "../semantic.h"
 
@@ -20,7 +20,7 @@ TEST(CodeGenerator, Empty) {
 }
 
 TEST(CodeGenerator, VariableDeclaration) {
-  std::string filename = "../src/tests/programs/ast/variableDeclarationTest.F7";
+  std::string filename = "../compiler/src/tests/programs/ast/variableDeclarationTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   auto [validProg, AST] = CreateAST(tokens);
   auto [validSemantic, symbols] = AnalyzeSemantic(AST);
@@ -34,7 +34,7 @@ TEST(CodeGenerator, VariableDeclaration) {
 
 TEST(CodeGenerator, VariableDeclarationAssignement) {
   std::string filename =
-      "../src/tests/programs/ast/variableDeclarationAssignementTest.F7";
+      "../compiler/src/tests/programs/ast/variableDeclarationAssignementTest.F7";
 
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   auto [validProg, AST] = CreateAST(tokens);
@@ -49,7 +49,7 @@ TEST(CodeGenerator, VariableDeclarationAssignement) {
 }
 
 TEST(CodeGenerator, IfNoElse) {
-  std::string filename = "../src/tests/programs/ast/ifNoElse.F7";
+  std::string filename = "../compiler/src/tests/programs/ast/ifNoElse.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   auto [validProg, AST] = CreateAST(tokens);
   auto [validSemantic, symbols] = AnalyzeSemantic(AST);
@@ -64,7 +64,7 @@ TEST(CodeGenerator, IfNoElse) {
 }
 
 TEST(CodeGenerator, IfElse) {
-  std::string filename = "../src/tests/programs/ast/ifElse.F7";
+  std::string filename = "../compiler/src/tests/programs/ast/ifElse.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   auto [validProg, AST] = CreateAST(tokens);
   auto [validSemantic, symbols] = AnalyzeSemantic(AST);
@@ -80,7 +80,7 @@ TEST(CodeGenerator, IfElse) {
 }
 
 TEST(CodeGenerator, While) {
-  std::string filename = "../src/tests/programs/ast/while.F7";
+  std::string filename = "../compiler/src/tests/programs/ast/while.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   auto [validProg, AST] = CreateAST(tokens);
   auto [validSemantic, symbols] = AnalyzeSemantic(AST);
@@ -95,7 +95,7 @@ TEST(CodeGenerator, While) {
 }
 
 TEST(CodeGenerator, EmptyVoid) {
-  std::string filename = "../src/tests/programs/ast/emptyVoid.F7";
+  std::string filename = "../compiler/src/tests/programs/ast/emptyVoid.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   auto [validProg, AST] = CreateAST(tokens);
   auto [validSemantic, symbols] = AnalyzeSemantic(AST);
@@ -108,7 +108,7 @@ TEST(CodeGenerator, EmptyVoid) {
 }
 
 TEST(CodeGenerator, VoidWithArgs) {
-  std::string filename = "../src/tests/programs/ast/voidWithArgs.F7";
+  std::string filename = "../compiler/src/tests/programs/ast/voidWithArgs.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   auto [validProg, AST] = CreateAST(tokens);
   auto [validSemantic, symbols] = AnalyzeSemantic(AST);

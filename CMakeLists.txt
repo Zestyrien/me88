@@ -1,11 +1,62 @@
-cmake_minimum_required(VERSION 3.0.0)
-project(me88 VERSION 0.1.0)
+cmake_minimum_required(VERSION 3.17)
+# specify the C++ standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-include(CTest)
-enable_testing()
+# ----- Compiler 
+project(me88Compiler)
 
-add_executable(me88 main.cpp)
+# add the executable
+add_executable(
+  me88Compiler
+  ./compiler/src/main.cpp
+  ./compiler/src/lexy.cpp
+  ./compiler/src/token.cpp
+  ./compiler/src/ast.cpp
+  ./compiler/src/semantic.cpp
+  ./compiler/src/tree.cpp
+  ./compiler/src/symbolstable.cpp
+  ./compiler/src/codeparse.cpp
+  ./compiler/src/codegenerator.cpp
+)
 
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
+#add tests executable 
+add_executable(
+  me88CompilerTests 
+  ./compiler/src/tests/mainTest.cpp 
+  ./compiler/src/lexy.cpp
+  ./compiler/src/token.cpp
+  ./compiler/src/tree.cpp
+  ./compiler/src/ast.cpp
+  ./compiler/src/semantic.cpp
+  ./compiler/src/symbolstable.cpp
+  ./compiler/src/codeparse.cpp
+  ./compiler/src/codegenerator.cpp
+) 
+
+#link libs
+find_package(spdlog REQUIRED)
+target_link_libraries(me88Compiler PRIVATE spdlog::spdlog)
+
+target_link_libraries(me88CompilerTests PRIVATE gtest)
+target_link_libraries(me88CompilerTests PRIVATE spdlog::spdlog)
+
+# ----- End compiler
+
+# ----- Processor
+project(ME88)
+
+# add the executable
+add_executable(
+	ME88 
+	./pc/src/main.cpp	
+	./pc/src/microPC.cpp
+	./pc/src/processor.cpp
+	./pc/src/bus.cpp
+	./pc/src/memdevice.cpp
+	./pc/src/instruction.cpp
+	./pc/src/printer.cpp
+)
+
+#link libs
+target_link_libraries(ME88 ncurses)
