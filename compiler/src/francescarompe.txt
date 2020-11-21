@@ -1,0 +1,126 @@
+0       00001011        11  push
+1       00001011        11  push
+
+2       11000000        192 jmp         // skip function definition
+3       00100011        35  offset
+4       00000000        0   offset
+
+//  load arg in al 
+5       00001011        11  push        // push z to save al content
+6       00000100        4   mov ss ax
+7       00000111        7   mov ax ds
+8       00000101        5   mov sp ax
+9       01100010        98  add $op al  // add to point to function arg
+10      00000100        4   operand 4   //
+11      00001010        10  mov ax di   //
+12      00001100        12  pop         // pop to put al content back
+13      00100000        32  mov ds:di al
+
+//  load arg in al 
+14      00001011        11  push
+15      00000100        4   mov ss ax
+16      00000111        7   mov ax ds
+17      00000101        5   mov sp ax
+18      01100010        98  add $op al  // add to point to function arg
+19      00000101        5   operand 4   //
+20      00001010        10  mov ax di   //
+21      00001100        12  pop         // pop to put al content back
+
+22      00100010        34  add ds:di al //addition for the fun
+
+//load z in al
+23      00001011        11  push 
+24      00000100        4   mov ss ax
+25      00000111        7   mov ax ds
+26      00000101        5   mov sp ax
+27      01100010        98  add $op al  // add to point to function arg
+28      00000001        1   point to z
+29      00001010        10  mov ax di   //
+30      00001100        12  pop         // pop to put al content back
+
+31      01000000        64  mov ds:di al //assignement
+
+32      01100000        96  mov &operand al // mov 1 in al successful assignement
+33      00000001        1   operand         //
+
+34      00010010        18  retn //end of function return 
+
+35      01100000        96  mov &op al
+36      00000101        5   op
+
+// load ds di 
+37      00001011        11  push
+38      00000100        4   mov ss ax
+39      00000111        7   mov ax ds
+40      00000101        5   mov sp ax
+41      01100010        98  add $op al  // add to point to function arg
+42      00000001        1   point to h
+43      00001010        10  mov ax di   //
+44      00001100        12  pop         // pop to put al content back
+
+45      01000000        64  mov ds:di al //assignement
+
+46      01100000        96  mov op al   // mov 1 in al successful assignement
+47      00000001        1   op          //
+
+48      01100000        96  mov op al
+49      00000111        7   op
+
+50      00001011        11  push
+51      00000100        4   mov ss ax
+52      00000111        7   mov ax ds    
+53      00000101        5   mov sp ax
+54      01100010        98  add $op al  // add to point to function arg
+55      00000010        2   point to h
+56      00001010        10  mov ax di   //    
+57      00001100        12  pop         // pop to put al content back
+
+58      01000000        64  mov ds:di al //assignement
+
+59      01100000        96  // mov 1 in al successful assignement
+60      00000001        1   //
+
+61      00001011        11  ??
+
+62      00001011        11      
+63      00000100        4   
+64      00000111        7   
+65      00000101        5   
+66      01100010        98      
+67      00000010        2   
+68      00001010        10  
+69      00001100        12  
+70      00100000        32      
+71      00001011        11  
+72      00001011        11  
+73      00000100        4   
+74      00000111        7   
+75      00000101        5   
+76      01100010        98  
+77      00000011        3   
+78      00001010        10  
+79      00001100        12  
+80      00100000        32  
+81      00001011        11  
+82      11010011        211 
+83      00000101        5   
+84      00000000        0   
+85      00001100        12  
+86      00001100        12  
+87      00001100        12  
+88      01100000        96  
+89      00010101        21  
+90      00001011        11  
+91      00000100        4   
+92      00000111        7   
+93      00000101        5   
+94      01100010        98  
+95      00000010        2   
+96      00001010        10  
+97      00001100        12  
+98      01000000        64  
+99      01100000        96  
+100     00000001        1   
+101     00001100        12  
+102     00001100        12  
+103     00010101        21  

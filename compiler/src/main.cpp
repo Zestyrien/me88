@@ -1,17 +1,16 @@
-#include "lexy.h"
-
-//#include "codegenerator.h"
-#include "ast.h"
-#include "codegenerator.h"
-#include "semantic.h"
-#include "spdlog/sinks/basic_file_sink.h"
-#include "spdlog/spdlog.h"
-#include "token.h"
 #include <fstream>
 #include <iostream>
 #include <memory>
-
 #include <unistd.h>
+
+#include "lexy.h"
+#include "ast.h"
+#include "semantic.h"
+#include "token.h"
+#include "codeparse.h"
+
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/spdlog.h"
 
 int main(int argc, char *argv[]) {
 #ifdef NDEBUG
@@ -46,9 +45,9 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  std::ofstream outfile(std::string(fileName) + ".bin");
   auto machinecode = GenerateCode(AST, symbols);
 
+  std::ofstream outfile(std::string(fileName) + ".bin");
   for (auto code : machinecode) {
     outfile << code << std::endl;
   }

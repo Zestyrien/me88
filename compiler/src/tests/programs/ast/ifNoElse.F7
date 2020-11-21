@@ -1,0 +1,3 @@
+if 1 then
+    u8 x := 5;
+endif

@@ -1,13 +1,16 @@
-
-
-void write : u8 x, u8 i {  
-  u8 z := x;
+void write : u8 x, u8 i, u8 o {  
+  u8 z := x + i;
 }
 
 u8 y := 5;
 u8 h := 7;
-write(y, h);
-#write(y);
+u8 r := 12;
+u8 t := 23;
+u8 k := 8;
+write(r, y, t);
+
+y := 21;
+
 #u8 a := 1;
 #if a > 0 then
 #  u8 z := 8;

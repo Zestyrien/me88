@@ -17,8 +17,26 @@ add_executable(
   tree.cpp
   symbolstable.cpp
   codegenerator.cpp
+  codeparse.cpp
 )
+
+#add tests executable 
+add_executable(
+  me88CompilerTests 
+  tests/mainTest.cpp 
+  lexy.cpp
+  token.cpp
+  tree.cpp
+  ast.cpp
+  semantic.cpp
+  symbolstable.cpp
+  codegenerator.cpp
+  codeparse.cpp
+) 
 
 #link libs
 find_package(spdlog REQUIRED)
 target_link_libraries(me88Compiler PRIVATE spdlog::spdlog)
+
+target_link_libraries(me88CompilerTests PRIVATE gtest)
+target_link_libraries(me88CompilerTests PRIVATE spdlog::spdlog)
