@@ -3,45 +3,52 @@ cmake_minimum_required(VERSION 3.17)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# ----- Compiler 
-project(me88Compiler)
+# ----- irCompiler 
+project(me88irCompiler)
 
 # add the executable
 add_executable(
-  me88Compiler
-  ./compiler/src/main.cpp
-  ./compiler/src/lexy.cpp
-  ./compiler/src/token.cpp
-  ./compiler/src/ast.cpp
-  ./compiler/src/semantic.cpp
-  ./compiler/src/tree.cpp
-  ./compiler/src/symbolstable.cpp
-  ./compiler/src/codeparse.cpp
-  ./compiler/src/codegenerator.cpp
+  me88irCompiler
+  ./irCompiler/main.cpp
+  ./common/opcode.cpp
+  ./irCompiler/fileReader.cpp
+  ./irCompiler/instructions/instruction.cpp
+  ./irCompiler/instructions/instructionFactory.cpp
+  ./irCompiler/instructions/alloca.cpp
+  ./irCompiler/instructions/store.cpp
+  ./irCompiler/instructions/load.cpp
+  ./irCompiler/instructions/functionDefinition.cpp
+  ./irCompiler/stackTracker.cpp
+  ./irCompiler/variableTable.cpp
+  ./irCompiler/programGenerator.cpp
 )
 
-#add tests executable 
+# add tests executable 
 add_executable(
-  me88CompilerTests 
-  ./compiler/src/tests/mainTest.cpp 
-  ./compiler/src/lexy.cpp
-  ./compiler/src/token.cpp
-  ./compiler/src/tree.cpp
-  ./compiler/src/ast.cpp
-  ./compiler/src/semantic.cpp
-  ./compiler/src/symbolstable.cpp
-  ./compiler/src/codeparse.cpp
-  ./compiler/src/codegenerator.cpp
+  me88irCompilerTests 
+  ./irCompiler/tests/mainTests.cpp
+  ./common/opcode.cpp
+  ./irCompiler/symbolTable.cpp
+  ./irCompiler/fileReader.cpp
+  ./irCompiler/instructions/instruction.cpp
+  ./irCompiler/instructions/instructionFactory.cpp
+  ./irCompiler/instructions/alloca.cpp
+  ./irCompiler/instructions/store.cpp
+  ./irCompiler/instructions/load.cpp
+  ./irCompiler/instructions/functionDefinition.cpp
+  ./irCompiler/stackTracker.cpp
+  ./irCompiler/variableTable.cpp  
+  ./irCompiler/programGenerator.cpp
 ) 
 
 #link libs
 find_package(spdlog REQUIRED)
-target_link_libraries(me88Compiler PRIVATE spdlog::spdlog)
+target_link_libraries(me88irCompiler PRIVATE spdlog::spdlog)
 
-target_link_libraries(me88CompilerTests PRIVATE gtest)
-target_link_libraries(me88CompilerTests PRIVATE spdlog::spdlog)
+target_link_libraries(me88irCompilerTests PRIVATE gtest)
+target_link_libraries(me88irCompilerTests PRIVATE spdlog::spdlog)
 
-# ----- End compiler
+# ----- End irCompiler
 
 # ----- Processor
 project(ME88)

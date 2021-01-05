@@ -135,7 +135,7 @@ Star GetFirstExecutionState(const std::bitset<8> &code)
 	case Opcode::pop_al: 
 		return Star::pop0;
 	case Opcode::call_cs_offset:
-	case Opcode::call_selector$offsett:
+	case Opcode::call_selector$offset:
 		return Star::call0;
 	case Opcode::retn: 
 	case Opcode::retf: 

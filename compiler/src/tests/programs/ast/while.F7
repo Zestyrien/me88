@@ -1,3 +1,0 @@
-while 1 loop
-    u8 x := 5;
-endloop

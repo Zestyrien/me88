@@ -61,7 +61,7 @@ void microPC::PowerOn(bool debugging)
 {
 	Bus bus;
 
-	MemDevice eprom(EPROM_START, EPROM_END, true, false, false, LoadProgram("../../programs/eprom.F7.bin"));
+	MemDevice eprom(EPROM_START, EPROM_END, true, false, false, LoadProgram("../programs/eprom.F7.bin"));
 	MemDevice ramOne(RAM_ONE_START, RAM_ONE_END, true, true, false);
 	MemDevice ramTwo(RAM_TWO_START, RAM_TWO_END, true, true, false);
 	MemDevice vidMem(VID_MEM_START, VID_MEM_END, false, true, true);

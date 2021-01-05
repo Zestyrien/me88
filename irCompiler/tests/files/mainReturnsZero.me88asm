@@ -1,0 +1,42 @@
+main:
+#  %1 = alloca i32, align 4
+push al
+push al
+push al
+push al
+#  store i32 0, i32* %1, align 4
+mov ss, ax
+mov ax, ds
+mov sp, ax
+add $operand, al
+00000011
+mov ax, di
+mov $operand, al
+00000000
+mov al, ds:(di)
+mov di, ax
+sub $operand, al
+00000001
+mov ax, di
+mov $operand, al
+00000000
+mov al, ds:(di)
+mov di, ax
+sub $operand, al
+00000001
+mov ax, di
+mov $operand, al
+00000000
+mov al, ds:(di)
+mov di, ax
+sub $operand, al
+00000001
+mov ax, di
+mov $operand, al
+00000000
+mov al, ds:(di)
+# clean up
+pop al
+pop al
+pop al
+pop al

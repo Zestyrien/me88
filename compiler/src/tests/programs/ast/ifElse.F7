@@ -1,5 +1,0 @@
-if 1 then
-    u8 x := 5;
-else
-    u8 y := 7;
-endif
