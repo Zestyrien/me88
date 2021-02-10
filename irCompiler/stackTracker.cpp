@@ -7,14 +7,8 @@ bool StackTracker::AddFrame(std::string const &name) {
   return true;
 }
 
-void StackTracker::Push(unsigned short const size) {
-  m_frame.varCount += size;
-}
+void StackTracker::Push(unsigned short const size) { m_frame.varCount += size; }
 
-Frame StackTracker::GetFrame() {
-  return m_frame;
-}
+Frame StackTracker::GetFrame() { return m_frame; }
 
-bool StackTracker::RemoveFrame(std::string const &name) {
-  return true;
-}
+bool StackTracker::RemoveFrame(std::string const &name) { return true; }

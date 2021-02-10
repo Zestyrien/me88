@@ -17,6 +17,8 @@ InstructionType Instruction::GetType(std::string const &instruction) {
     return InstructionType::Store;
   } else if (instruction.find("load") != std::string::npos) {
     return InstructionType::Load;
+  } else if (instruction.find("sext") != std::string::npos) {
+    return InstructionType::Sext;
   } else if (instruction.find("define dso_local") != std::string::npos) {
     return InstructionType::FunctionDefinition;
   } else if (instruction == "}") {
@@ -34,6 +36,8 @@ std::string Instruction::PrintType() const {
     return "Store";
   case InstructionType::Load:
     return "Load";
+  case InstructionType::Sext:
+    return "Sext";
   case InstructionType::FunctionDefinition:
     return "FunctionDefinition";
   case InstructionType::FunctionDefinitionEnd:

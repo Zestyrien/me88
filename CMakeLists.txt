@@ -17,6 +17,7 @@ add_executable(
   ./irCompiler/instructions/alloca.cpp
   ./irCompiler/instructions/store.cpp
   ./irCompiler/instructions/load.cpp
+  ./irCompiler/instructions/sext.cpp
   ./irCompiler/instructions/functionDefinition.cpp
   ./irCompiler/stackTracker.cpp
   ./irCompiler/variableTable.cpp
@@ -35,6 +36,7 @@ add_executable(
   ./irCompiler/instructions/alloca.cpp
   ./irCompiler/instructions/store.cpp
   ./irCompiler/instructions/load.cpp
+  ./irCompiler/instructions/sext.cpp
   ./irCompiler/instructions/functionDefinition.cpp
   ./irCompiler/stackTracker.cpp
   ./irCompiler/variableTable.cpp  

@@ -7,6 +7,7 @@
 #include "allocaTests.cpp"
 #include "storeTests.cpp"
 #include "loadTests.cpp"
+#include "sextTests.cpp"
 #include "functionTests.cpp"
 #include "programGeneratorTests.cpp"
 

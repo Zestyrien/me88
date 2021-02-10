@@ -3,6 +3,7 @@
 #include "alloca.h"
 #include "store.h"
 #include "load.h"
+#include "sext.h"
 #include "functionDefinition.h"
 
 namespace InstructionFactory {

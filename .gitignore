@@ -30,6 +30,9 @@
 *.exe
 *.out
 *.app
+
 .vscode/
 build
 *.F7.bin
+*.asm.bin
+*.asm

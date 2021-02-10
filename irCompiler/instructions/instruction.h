@@ -8,6 +8,7 @@ enum class InstructionType {
   Alloca,
   Store,
   Load,
+  Sext,
   FunctionDefinition,
   FunctionDefinitionEnd
 };

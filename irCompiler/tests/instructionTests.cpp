@@ -8,6 +8,7 @@ TEST(InstructionClass, GetTypeFromString) {
   EXPECT_TRUE(Instruction::GetType(instruction) == InstructionType::Alloca);
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Store);
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Load);
+  EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Sext);
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::FunctionDefinition);  
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::FunctionDefinitionEnd);  
   
@@ -16,13 +17,23 @@ TEST(InstructionClass, GetTypeFromString) {
   EXPECT_TRUE(Instruction::GetType(instruction) == InstructionType::Store);
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Alloca);  
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Load);
+  EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Sext);
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::FunctionDefinition);  
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::FunctionDefinitionEnd);  
 
   instruction = "%5 = load i8, i8* %3, align 1";
   EXPECT_TRUE(Instruction::GetType(instruction) == InstructionType::Load);
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Store);
-  EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Alloca);  
+  EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Alloca);
+  EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Sext);  
+  EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::FunctionDefinition);  
+  EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::FunctionDefinitionEnd);  
+
+  instruction = "%6 = sext i8 %5 to i32"; 
+  EXPECT_TRUE(Instruction::GetType(instruction) == InstructionType::Sext);  
+  EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Store);
+  EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Alloca);
+  EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Load);
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::FunctionDefinition);  
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::FunctionDefinitionEnd);  
 
@@ -30,6 +41,7 @@ TEST(InstructionClass, GetTypeFromString) {
   EXPECT_TRUE(Instruction::GetType(instruction) == InstructionType::FunctionDefinition);
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Store);
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Load);
+  EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Sext);
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Alloca);  
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::FunctionDefinitionEnd);
 
@@ -37,6 +49,7 @@ TEST(InstructionClass, GetTypeFromString) {
   EXPECT_TRUE(Instruction::GetType(instruction) == InstructionType::FunctionDefinitionEnd);
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Store);
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Load);
+  EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Sext);
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::Alloca);  
   EXPECT_TRUE(Instruction::GetType(instruction) != InstructionType::FunctionDefinition);
 }

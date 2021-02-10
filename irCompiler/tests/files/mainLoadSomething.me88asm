@@ -1,0 +1,95 @@
+main:
+#  %1 = alloca i32, align 4
+push al
+push al
+push al
+push al
+#  %2 = alloca i32, align 4
+push al
+push al
+push al
+push al
+#  store i32 5, i32* %1, align 4
+mov ss, ax
+mov ax, ds
+mov sp, ax
+add $operand, al
+00000111
+mov ax, di
+mov $operand, al
+00000000
+mov al, ds:(di)
+mov di, ax
+sub $operand, al
+00000001
+mov ax, di
+mov $operand, al
+00000000
+mov al, ds:(di)
+mov di, ax
+sub $operand, al
+00000001
+mov ax, di
+mov $operand, al
+00000000
+mov al, ds:(di)
+mov di, ax
+sub $operand, al
+00000001
+mov ax, di
+mov $operand, al
+00000101
+mov al, ds:(di)
+#  %2 = load i32, i32* %1, align 4
+mov ss, ax
+mov ax, ds
+mov sp, ax
+mov ds:offset, al
+00000000
+00000111
+push al
+mov sp, ax
+add $operand, al
+00000100
+mov ax, di
+pop al
+mov al, ds:(di)
+mov ds:offset, al
+00000000
+00000110
+push al
+mov sp, ax
+add $operand, al
+00000011
+mov ax, di
+pop al
+mov al, ds:(di)
+mov ds:offset, al
+00000000
+00000101
+push al
+mov sp, ax
+add $operand, al
+00000010
+mov ax, di
+pop al
+mov al, ds:(di)
+mov ds:offset, al
+00000000
+00000100
+push al
+mov sp, ax
+add $operand, al
+00000001
+mov ax, di
+pop al
+mov al, ds:(di)
+# clean up
+pop al
+pop al
+pop al
+pop al
+pop al
+pop al
+pop al
+pop al

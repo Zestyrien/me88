@@ -24,6 +24,9 @@ std::vector<Instruction *> InstructionFactory::MakeInstructions(
     case InstructionType::Load:
       inst = new Load(instStr, count);
       break;
+    case InstructionType::Sext:
+      inst = new Sext(instStr, count);
+      break;
     case InstructionType::FunctionDefinition:
       inst = new FunctionDefinition(instStr, count);
       break;

@@ -6,6 +6,7 @@
 #include "./instructions/functionDefinition.h"
 #include "./instructions/store.h"
 #include "./instructions/load.h"
+#include "./instructions/sext.h"
 
 #include "stackTracker.h"
 #include "variableTable.h"
@@ -27,4 +28,5 @@ private:
   std::vector<std::string> HandleAlloca(Alloca *alloc) const;
   std::vector<std::string> HandleStore(Store *store) const;
   std::vector<std::string> HandleLoad(Load *load) const;
+  std::vector<std::string> HandleSext(Sext *sext) const;
 };

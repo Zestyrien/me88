@@ -1,11 +1,11 @@
-#include "load.h"
+#include "sext.h"
 
 #include <regex>
 
-Load::Load(std::string const &instruction, int line)
-    : Instruction(instruction, line, InstructionType::Load) {}
+Sext::Sext(std::string const &instruction, int line)
+    : Instruction(instruction, line, InstructionType::Sext) {}
 
-std::string Load::Print() const {
+std::string Sext::Print() const {
   std::string print = std::to_string(m_line) + " " + m_instruction + "\n" +
                       "Instruction:\t" + PrintType() + "\nSource:\t" +
                       GetSourceVariable() + "\nDestination:\t" +
@@ -14,17 +14,17 @@ std::string Load::Print() const {
   return print;
 }
 
-std::string Load::GetDestinationVariable() const {
-  return std::regex_replace(m_instruction, std::regex("(.*)(%[A-z-0-9]+)(\\s=.*)"),
+std::string Sext::GetDestinationVariable() const {
+  return std::regex_replace(m_instruction, std::regex("(%[A-z-0-9]+)(\\s=.*)"),
+                            std::string("$1"));
+}
+
+std::string Sext::GetSourceVariable() const {
+  return std::regex_replace(m_instruction, std::regex("(.*)(%[A-z-0-9]+)(.*)"),
                             std::string("$2"));
 }
 
-std::string Load::GetSourceVariable() const {
-  return std::regex_replace(m_instruction, std::regex("(.*)(%[A-z-0-9]+)(,.*)"),
-                            std::string("$2"));
-}
-
-int Load::GetVariableSize() const {
+int Sext::GetVariableSize() const {
   int size = 0;
 
   std::string number = std::regex_replace(
