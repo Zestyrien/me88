@@ -97,9 +97,11 @@ void SymbolsTable::AddFunctionScope(int scopeId, int parentScopeId) {
   m_table[scopeId] = std::make_shared<Scope>(parentScopeId, true);
 }
 
-std::tuple<bool, std::shared_ptr<Scope>> SymbolsTable::GetScope(int scopeId) {
-  if (m_table.find(scopeId) != m_table.end()) {
-    return {true, m_table[scopeId]};
+std::tuple<bool, std::shared_ptr<Scope>> SymbolsTable::GetScope(int scopeId) const {
+  
+  auto const it = m_table.find(scopeId);
+  if ( it != m_table.end()) {
+    return {true, it->second};
   }
 
   return {false, nullptr};

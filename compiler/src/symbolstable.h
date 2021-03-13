@@ -46,7 +46,7 @@ public:
   GetArgumentsForFunction(const std::string &funName) const;
   void AddScope(int scopeId, int parentScopeId);
   void AddFunctionScope(int scopeId, int parentScopeId);
-  std::tuple<bool, std::shared_ptr<Scope>> GetScope(int scopeId);
+  std::tuple<bool, std::shared_ptr<Scope>> GetScope(int scopeId) const;
   bool AddVariableSymbolToScope(const std::string &varType,
                                 const std::string &varName, int scopeId);
   bool AddSymbolToScope(std::shared_ptr<Symbol> sy, int scopeId);

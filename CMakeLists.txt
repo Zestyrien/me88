@@ -16,8 +16,8 @@ add_executable(
   ./compiler/src/semantic.cpp
   ./compiler/src/tree.cpp
   ./compiler/src/symbolstable.cpp
-  ./compiler/src/codeparse.cpp
-  ./compiler/src/codegenerator.cpp
+  ./compiler/src/symbolstable.cpp
+  ./compiler/src/parser.cpp
 )
 
 #add tests executable 
@@ -30,8 +30,7 @@ add_executable(
   ./compiler/src/ast.cpp
   ./compiler/src/semantic.cpp
   ./compiler/src/symbolstable.cpp
-  ./compiler/src/codeparse.cpp
-  ./compiler/src/codegenerator.cpp
+  ./compiler/src/parser.cpp
 ) 
 
 #link libs

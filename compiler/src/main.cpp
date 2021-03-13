@@ -7,7 +7,7 @@
 #include "ast.h"
 #include "semantic.h"
 #include "token.h"
-#include "codeparse.h"
+#include "parser.h"
 
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/spdlog.h"
@@ -35,22 +35,26 @@ int main(int argc, char *argv[]) {
   Lexer::PrintTokens(tokens);
 #endif
 
-  auto [validProg, AST] = CreateAST(tokens);
+  auto const [validProg, AST] = CreateAST(tokens);
   if (!validProg) {
     return 0;
   }
 
-  auto [validSemantic, symbols] = AnalyzeSemantic(AST);
+  auto const [validSemantic, symbols] = AnalyzeSemantic(AST);
   if (!validSemantic) {
     return 0;
   }
 
+/*
   auto machinecode = GenerateCode(AST, symbols);
 
   std::ofstream outfile(std::string(fileName) + ".bin");
   for (auto code : machinecode) {
     outfile << code << std::endl;
   }
+*/
+
+  auto const ir = Parser::ParseIR(AST, symbols);
 
   return 0;
 }

@@ -354,13 +354,13 @@ std::vector<std::bitset<8>> GenerateCode(const Tree &ast,
   CodeGenerator code;
   auto tree = std::make_shared<Tree>(ast);
 
-  CreateFunFrame(tree, symbols, code);
-  PushArguments(tree, symbols, code);
+  //CreateFunFrame(tree, symbols, code);
+  //PushArguments(tree, symbols, code);
 
   ParseScope(tree, symbols, code);
 
-  PopArguments(tree, symbols, code);
-  RemoveFrame(code);
+  //PopArguments(tree, symbols, code);
+  //RemoveFrame(code);
 
   code.Hlt();
 
