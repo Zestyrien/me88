@@ -222,7 +222,8 @@ std::vector<std::string> ParseIf(std::shared_ptr<Node> const &node,
     offset += 3;
   }
 
-  ifcode.push_back("%" + std::to_string(offset));
+  ifcode.push_back("off+" + std::to_string(offset));
+  ifcode.push_back("off+" + std::to_string(offset));
 
   // add if scope code
   ifcode.insert(ifcode.end(), ifscopecode.begin(), ifscopecode.end());
@@ -233,12 +234,66 @@ std::vector<std::string> ParseIf(std::shared_ptr<Node> const &node,
     // parse the scope code
     auto const elsescodescope = ParseScope(elsebodyTree, symbols);
     // get the size of the scope code to know how far to jump
-    ifcode.push_back("%" + std::to_string(CountOffset(elsescodescope)));
+    auto const elseOff = std::to_string(CountOffset(elsescodescope));
+    ifcode.push_back("off+" + elseOff);
+    ifcode.push_back("off+" + elseOff);
 
     ifcode.insert(ifcode.end(), elsescodescope.begin(), elsescodescope.end());
   }
 
   return ifcode;
+}
+
+std::vector<std::string> ParseWhile(std::shared_ptr<Node> const &node,
+                                    SymbolsTable const &symbols) {
+  std::vector<std::string> whilecode;
+
+  whilecode.push_back("# while loop");
+  // while will be something like
+  // expression
+  // cmp
+  // jne to outside the loop
+  // loop body
+  // jump to expression
+
+  // expression will be evaluated and put in al
+  auto const exp = ParseExpression8Bits(node->GetLeft());
+  auto const expCount = CountOffset(exp);
+
+  whilecode.insert(whilecode.end(), exp.begin(), exp.end());
+  // if the condition is true there will be 1 in AL
+  whilecode.push_back("cmp_operand_al");
+  whilecode.push_back("%1");
+
+  auto const whilebody = node->GetTree();
+
+  if (whilebody != nullptr) {
+    // if the condition is meet we don't jump and execute the  while body
+    whilecode.push_back("jne_cs_offset");
+
+    auto const whilebodyCode = ParseScope(whilebody, symbols);
+    auto const whilebodyCount = CountOffset(whilebodyCode);
+
+    // add three for the jump back that will be at the end of the body
+    whilecode.push_back("off+" + std::to_string(whilebodyCount + 3));
+    whilecode.push_back("off+" + std::to_string(whilebodyCount + 3));
+
+    whilecode.insert(whilecode.end(), whilebodyCode.begin(),
+                     whilebodyCode.end());
+
+    // need to jump back to the expression
+    whilecode.push_back("jmp_cs_offset");
+
+    // from the top
+    // +2 cmp_operand_al
+    // +3 jne_cs_offset
+    // +3 jne_cs_offset 
+    auto const offToTop = expCount + whilebodyCount + 8;
+    whilecode.push_back("off-" + std::to_string(offToTop));
+    whilecode.push_back("off-" + std::to_string(offToTop));
+  }
+
+  return whilecode;
 }
 
 std::vector<std::string> ParseScope(std::shared_ptr<Tree> const &tree,
@@ -286,9 +341,12 @@ std::vector<std::string> ParseScope(std::shared_ptr<Tree> const &tree,
       auto const ifcode = ParseIf(node, symbols);
       scope.insert(scope.end(), ifcode.begin(), ifcode.end());
     } break;
-    case NodeType::While:
-      // ParseWhile(node, symbols, code);
-      break;
+    case NodeType::While: {
+      scope.push_back("# parse if statement from line " +
+                      std::to_string(node->GetLine()));
+      auto const whilecode = ParseWhile(node, symbols);
+      scope.insert(scope.end(), whilecode.begin(), whilecode.end());
+    } break;
     case NodeType::Function:
       //  ParseFunctionDefinition(node, symbols, code);
       break;

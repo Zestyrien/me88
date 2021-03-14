@@ -490,7 +490,6 @@ TEST(IR, ir_variableExpressions) {
 
   EXPECT_EQ(ir.size(), expectedResult.size());
   if (ir.size() != expectedResult.size()) {
-    // Print(ir);
     return;
   }
 
@@ -526,7 +525,8 @@ TEST(IR, ir_ifNoElse) {
                                              "cmp_operand_al",
                                              "%1",
                                              "jne_cs_offset",
-                                             "%15",
+                                             "off+15",
+                                             "off+15",
                                              "# start scope push variables",
                                              "push_al",
                                              "",
@@ -593,7 +593,8 @@ TEST(IR, ir_ifElse) {
                                              "cmp_operand_al",
                                              "%1",
                                              "jne_cs_offset",
-                                             "%18",
+                                             "off+18",
+                                             "off+18",
                                              "# start scope push variables",
                                              "push_al",
                                              "",
@@ -619,7 +620,8 @@ TEST(IR, ir_ifElse) {
                                              "pop_al",
                                              "",
                                              "jmp_cs_offset",
-                                             "%15",
+                                             "off+15",
+                                             "off+15",
                                              "# start scope push variables",
                                              "push_al",
                                              "",
@@ -651,7 +653,77 @@ TEST(IR, ir_ifElse) {
 
   EXPECT_EQ(ir.size(), expectedResult.size());
   if (ir.size() != expectedResult.size()) {
-    Print(ir);
+    return;
+  }
+
+  for (size_t i = 0; i < ir.size(); i++) {
+    EXPECT_EQ(ir[i], expectedResult[i]);
+  }
+}
+
+TEST(IR, ir_while) {
+  std::string filename = basePath + "whileTest.F7";
+  auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
+  EXPECT_TRUE(validToks);
+
+  auto const [validAST, AST] = CreateAST(tokens);
+  EXPECT_TRUE(validAST);
+
+  auto const [validSemantic, symbols] = AnalyzeSemantic(AST);
+  EXPECT_TRUE(validSemantic);
+
+  auto const ir = Parser::ParseIR("whileTest.F7", AST, symbols);
+
+  std::vector<std::string> expectedResult = {"#",
+                                             "# whileTest.F7",
+                                             "#",
+                                             "",
+                                             "# start scope push variables",
+                                             "",
+                                             "# parse if statement from line 1",
+                                             "# while loop",
+                                             "# load number in al",
+                                             "mov_operand_al",
+                                             "%1",
+                                             "cmp_operand_al",
+                                             "%1",
+                                             "jne_cs_offset",
+                                             "off+18",
+                                             "off+18",
+                                             "# start scope push variables",
+                                             "push_al",
+                                             "",
+                                             "# parse expression from line 2",
+                                             "# load number in al",
+                                             "mov_operand_al",
+                                             "%5",
+                                             "# assignement expression for x",
+                                             "push_al",
+                                             "mov_ss_ax",
+                                             "mov_ax_ds",
+                                             "mov_bp_ax",
+                                             "sub_operand_al",
+                                             "^x",
+                                             "mov_ax_di",
+                                             "pop_al",
+                                             "# move value in variable",
+                                             "mov_al_ds$di",
+                                             "mov_operand_al",
+                                             "%1",
+                                             "",
+                                             "# end scope clean stack",
+                                             "pop_al",
+                                             "",
+                                             "jmp_cs_offset",
+                                             "off-25",
+                                             "off-25",
+                                             "# end scope clean stack",
+                                             "",
+                                             "# end program",
+                                             "htl"};
+
+  EXPECT_EQ(ir.size(), expectedResult.size());
+  if (ir.size() != expectedResult.size()) {
     return;
   }
 

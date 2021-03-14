@@ -1,5 +1,5 @@
 u8 foo : u8 a, u8 b {
-    ret a + b;
+  ret a + b;
 }
 
 u8 x := 5;

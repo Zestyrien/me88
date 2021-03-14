@@ -202,7 +202,7 @@ TEST(AST, CreateAST_IfElse) {
 }
 
 TEST(AST, CreateAST_While) {
-  std::string filename = "../compiler/src/tests/files/ast/while.F7";
+  std::string filename = "../compiler/src/tests/files/ast/whileTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
   EXPECT_TRUE(validToks);

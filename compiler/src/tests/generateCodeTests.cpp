@@ -80,7 +80,7 @@ TEST(CodeGenerator, IfElse) {
 }
 
 TEST(CodeGenerator, While) {
-  std::string filename = "../compiler/src/tests/programs/ast/while.F7";
+  std::string filename = "../compiler/src/tests/programs/ast/whileTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   auto [validProg, AST] = CreateAST(tokens);
   auto [validSemantic, symbols] = AnalyzeSemantic(AST);
