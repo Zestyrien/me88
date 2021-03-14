@@ -47,6 +47,15 @@ void Scope::Print(int id) const {
   }
 }
 
+bool SymbolsTable::IsFunctionArgument(std::string const &variable,
+                                      int const &scopeId) const {
+  auto const [success, symbol] = GetSymbol(variable, scopeId);
+  if (success) {
+    return symbol->symbolTp == SymbolType::FunctionArg;
+  }
+  return false;
+}
+
 bool SymbolsTable::AddFunctionDefinition(
     const std::string &funName, const std::string &funType,
     const std::vector<std::pair<std::string, std::string>> &funArgs,
@@ -97,10 +106,11 @@ void SymbolsTable::AddFunctionScope(int scopeId, int parentScopeId) {
   m_table[scopeId] = std::make_shared<Scope>(parentScopeId, true);
 }
 
-std::tuple<bool, std::shared_ptr<Scope>> SymbolsTable::GetScope(int scopeId) const {
-  
+std::tuple<bool, std::shared_ptr<Scope>>
+SymbolsTable::GetScope(int scopeId) const {
+
   auto const it = m_table.find(scopeId);
-  if ( it != m_table.end()) {
+  if (it != m_table.end()) {
     return {true, it->second};
   }
 

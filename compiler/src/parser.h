@@ -6,10 +6,6 @@
 #include <vector>
 
 namespace Parser {
-struct ScopeInfo {
-
-};
-
 
 std::vector<std::string> ParseIR(std::string const &filename,
                                  Tree const &program,

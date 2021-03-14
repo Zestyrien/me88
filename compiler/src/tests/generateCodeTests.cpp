@@ -95,7 +95,7 @@ TEST(CodeGenerator, While) {
 }
 
 TEST(CodeGenerator, EmptyVoid) {
-  std::string filename = "../compiler/src/tests/programs/ast/emptyVoid.F7";
+  std::string filename = "../compiler/src/tests/programs/ast/emptyVoidTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   auto [validProg, AST] = CreateAST(tokens);
   auto [validSemantic, symbols] = AnalyzeSemantic(AST);

@@ -238,7 +238,7 @@ TEST(AST, CreateAST_While) {
 }
 
 TEST(AST, Create_EmptyVoid) {
-  std::string filename = "../compiler/src/tests/files/ast/emptyVoid.F7";
+  std::string filename = "../compiler/src/tests/files/ast/emptyVoidTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
   EXPECT_TRUE(validToks);
@@ -284,7 +284,7 @@ TEST(AST, Create_EmptyVoid) {
 }
 
 TEST(AST, Create_VoidWithArgs) {
-  std::string filename = "../compiler/src/tests/files/ast/voidWithArgs.F7";
+  std::string filename = "../compiler/src/tests/files/ast/voidWithArgsTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
   EXPECT_TRUE(validToks);
@@ -303,7 +303,7 @@ TEST(AST, Create_VoidWithArgs) {
   EXPECT_EQ(funNd->GetType(), NodeType::Function);
   EXPECT_EQ(funNd->GetLine(), 1);
   EXPECT_EQ(funNd->GetRight(), nullptr);
-  EXPECT_EQ(funNd->GetTree()->GetNodes().size(), 0);
+  EXPECT_EQ(funNd->GetTree()->GetNodes().size(), 2);
 
   auto funLeft = funNd->GetLeft();
   EXPECT_EQ(funLeft->GetValue(), "foo");
@@ -355,7 +355,7 @@ TEST(AST, Create_VoidWithArgs) {
   auto funCall = nodes[5];
   EXPECT_EQ(funCall->GetValue(), "foo");
   EXPECT_EQ(funCall->GetType(), NodeType::FunctionCall);
-  EXPECT_EQ(funCall->GetLine(), 6);
+  EXPECT_EQ(funCall->GetLine(), 8);
   EXPECT_EQ(funCall->GetRight(), nullptr);
   EXPECT_EQ(funCall->GetLeft(), nullptr);
 
@@ -365,7 +365,7 @@ TEST(AST, Create_VoidWithArgs) {
   auto firstCallArg = callArgs[0];
   EXPECT_EQ(firstCallArg->GetValue(), "x");
   EXPECT_EQ(firstCallArg->GetType(), NodeType::Variable);
-  EXPECT_EQ(firstCallArg->GetLine(), 6);
+  EXPECT_EQ(firstCallArg->GetLine(), 8);
   EXPECT_EQ(firstCallArg->GetLeft(), nullptr);
   EXPECT_EQ(firstCallArg->GetRight(), nullptr);
   EXPECT_EQ(firstCallArg->GetTree(), nullptr);
@@ -373,7 +373,7 @@ TEST(AST, Create_VoidWithArgs) {
   auto secondCallArg = callArgs[1];
   EXPECT_EQ(secondCallArg->GetValue(), "y");
   EXPECT_EQ(secondCallArg->GetType(), NodeType::Variable);
-  EXPECT_EQ(secondCallArg->GetLine(), 6);
+  EXPECT_EQ(secondCallArg->GetLine(), 8);
   EXPECT_EQ(secondCallArg->GetLeft(), nullptr);
   EXPECT_EQ(secondCallArg->GetRight(), nullptr);
   EXPECT_EQ(secondCallArg->GetTree(), nullptr);
