@@ -88,7 +88,7 @@ TEST(AST, CreateAST_VariableDeclarationAssignement) {
 }
 
 TEST(AST, CreateAST_IfNoElse) {
-  std::string filename = "../compiler/src/tests/files/ast/ifNoElse.F7";
+  std::string filename = "../compiler/src/tests/files/ast/ifNoElseTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
   EXPECT_TRUE(validToks);
@@ -139,7 +139,7 @@ TEST(AST, CreateAST_IfNoElse) {
 }
 
 TEST(AST, CreateAST_IfElse) {
-  std::string filename = "../compiler/src/tests/files/ast/ifElse.F7";
+  std::string filename = "../compiler/src/tests/files/ast/ifElseTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
   EXPECT_TRUE(validToks);

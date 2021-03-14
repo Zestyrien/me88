@@ -49,7 +49,7 @@ TEST(CodeGenerator, VariableDeclarationAssignement) {
 }
 
 TEST(CodeGenerator, IfNoElse) {
-  std::string filename = "../compiler/src/tests/programs/ast/ifNoElse.F7";
+  std::string filename = "../compiler/src/tests/programs/ast/ifNoElseTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   auto [validProg, AST] = CreateAST(tokens);
   auto [validSemantic, symbols] = AnalyzeSemantic(AST);
@@ -64,7 +64,7 @@ TEST(CodeGenerator, IfNoElse) {
 }
 
 TEST(CodeGenerator, IfElse) {
-  std::string filename = "../compiler/src/tests/programs/ast/ifElse.F7";
+  std::string filename = "../compiler/src/tests/programs/ast/ifElseTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   auto [validProg, AST] = CreateAST(tokens);
   auto [validSemantic, symbols] = AnalyzeSemantic(AST);
