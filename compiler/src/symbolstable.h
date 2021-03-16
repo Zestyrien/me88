@@ -35,7 +35,10 @@ struct Scope {
 
 class SymbolsTable {
 public:
-  bool IsFunctionArgument(std::string const &variable, int const &scopeId) const;
+  bool IsFunctionArgument(std::string const &variable,
+                          int const &scopeId) const;
+  int GetFunctionArgumentIndex(std::string const &variable,
+                               int const &scopeId) const;
   bool AddFunctionDefinition(
       const std::string &funName, const std::string &funType,
       const std::vector<std::pair<std::string, std::string>> &funArgs,

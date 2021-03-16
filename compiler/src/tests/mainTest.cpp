@@ -3,6 +3,7 @@
 #include "lexerTests.cpp"
 #include "astTests.cpp"
 #include "irTests.cpp"
+#include "machineCodeTests.cpp"
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv); 

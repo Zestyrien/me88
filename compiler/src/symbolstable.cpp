@@ -56,6 +56,16 @@ bool SymbolsTable::IsFunctionArgument(std::string const &variable,
   return false;
 }
 
+int SymbolsTable::GetFunctionArgumentIndex(std::string const &variable,
+                                           int const &scopeId) const {
+  auto const [success, symbol] = GetSymbol(variable, scopeId);
+  if (success) {
+    return symbol->index;
+  }
+  //TO DO there could be a bug here
+  return 0;
+}
+
 bool SymbolsTable::AddFunctionDefinition(
     const std::string &funName, const std::string &funType,
     const std::vector<std::pair<std::string, std::string>> &funArgs,

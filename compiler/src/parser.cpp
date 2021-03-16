@@ -1,7 +1,12 @@
 #include "parser.h"
-
+#include "../../common/opcode.h"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/spdlog.h"
+
+// TO DO make something a bit more structured
+std::unordered_map<int, std::unordered_map<std::string, int>> stackDisplacement;
+std::unordered_map<std::string, std::unordered_map<std::string, int>>
+    argumentDisplacement;
 
 size_t CountOffset(std::vector<std::string> const &code) {
   // return the actual size of the code without comments and empy lines
@@ -29,16 +34,18 @@ size_t CountOffset(std::vector<std::string> const &code) {
 std::vector<std::string> ParseScope(std::shared_ptr<Tree> const &tree,
                                     SymbolsTable const &symbols);
 
-std::vector<std::string>
-ParseExpression8Bits(std::shared_ptr<Node> const &node, SymbolsTable const &symbols, int const& scopeId) {
+std::vector<std::string> ParseExpression8Bits(std::shared_ptr<Node> const &node,
+                                              SymbolsTable const &symbols,
+                                              int const &scopeId) {
 
   std::vector<std::string> expression;
 
   auto const ndvalue = node->GetValue();
   auto const ndtype = node->GetType();
 
-  auto const ParseLoadVariableAL = [symbols, scopeId](std::vector<std::string> &code,
-                                      std::string const &variable) {
+  auto const ParseLoadVariableAL = [symbols,
+                                    scopeId](std::vector<std::string> &code,
+                                             std::string const &variable) {
     // save al
     code.push_back("push_al");
     // set ds
@@ -46,17 +53,24 @@ ParseExpression8Bits(std::shared_ptr<Node> const &node, SymbolsTable const &symb
     code.push_back("mov_ax_ds");
     // set di
     code.push_back("mov_bp_ax");
-    // sub displacement to base pointer
-    // TO DO handle function arguments case at some point
-    if(symbols.IsFunctionArgument(variable, scopeId)) {
-      // function arguments are above bp 
+    // sub displacement to base pointer if it's a new varialble in the scope
+    // add it if it's a function argument
+    size_t displacement = 0;
+    if (symbols.IsFunctionArgument(variable, scopeId)) {
+      // function arguments are above bp
+      // 1 is the minimum required
+      // 2 is the size of the return address 
+      //  TO DO double check if need to save more stuff on function call
+      displacement = symbols.GetFunctionArgumentIndex(variable, scopeId) + 1 + 2;
       code.push_back("add_operand_al");
     } else {
       // variable declared in the scope are under bp
       code.push_back("sub_operand_al");
-    }   
-    
-    code.push_back("^" + variable);
+      displacement = stackDisplacement[scopeId][variable];
+    }
+
+    code.push_back("# displacement for " + variable);
+    code.push_back("^" + std::to_string(displacement));
     code.push_back("mov_ax_di");
     // restore al
     code.push_back("pop_al");
@@ -205,7 +219,8 @@ ParseExpression8Bits(std::shared_ptr<Node> const &node, SymbolsTable const &symb
 }
 
 std::vector<std::string> ParseIf(std::shared_ptr<Node> const &node,
-                                 SymbolsTable const &symbols, int const& scopeId) {
+                                 SymbolsTable const &symbols,
+                                 int const &scopeId) {
   auto const ndbodies = node->GetRight();
   auto const ifbodyTree = ndbodies->GetLeft()->GetTree();
   auto const ndbodieselse = ndbodies->GetRight();
@@ -257,7 +272,8 @@ std::vector<std::string> ParseIf(std::shared_ptr<Node> const &node,
 }
 
 std::vector<std::string> ParseWhile(std::shared_ptr<Node> const &node,
-                                    SymbolsTable const &symbols, int const& scopeId) {
+                                    SymbolsTable const &symbols,
+                                    int const &scopeId) {
   std::vector<std::string> whilecode;
 
   whilecode.push_back("# while loop");
@@ -335,15 +351,15 @@ ParseFunctionDefinition(std::shared_ptr<Node> const &node,
   definitioncode.push_back("off+" + std::to_string(offcount + 1));
   // this is the entry point for the function call
   definitioncode.push_back("£" + funName);
-  definitioncode.insert(definitioncode.end(), funscope.begin(),
-                        funscope.end());
+  definitioncode.insert(definitioncode.end(), funscope.begin(), funscope.end());
   // return near
   definitioncode.push_back("retn");
   return definitioncode;
 }
 
 std::vector<std::string> ParseFunctionCall(std::shared_ptr<Node> const &node,
-                                           SymbolsTable const &symbols, int const& scopeId) {
+                                           SymbolsTable const &symbols,
+                                           int const &scopeId) {
   std::vector<std::string> callcode;
 
   auto const funName = node->GetValue();
@@ -354,7 +370,7 @@ std::vector<std::string> ParseFunctionCall(std::shared_ptr<Node> const &node,
 
   // push arguments in reverse so they are easier to address
   for (size_t i = argNodes.size(); i > 0; i--) {
-    auto const exp = ParseExpression8Bits(argNodes[i-1], symbols, scopeId);
+    auto const exp = ParseExpression8Bits(argNodes[i - 1], symbols, scopeId);
     callcode.insert(callcode.end(), exp.begin(), exp.end());
     callcode.push_back("push_al");
   }
@@ -395,6 +411,7 @@ std::vector<std::string> ParseScope(std::shared_ptr<Tree> const &tree,
       // push in the stack variables in the scope
       scope.push_back("push_al");
       countPush++;
+      stackDisplacement[scopeId][entry->name] = countPush;
     }
   }
   scope.push_back("");
@@ -448,12 +465,16 @@ std::vector<std::string> ParseScope(std::shared_ptr<Tree> const &tree,
   }
   scope.push_back("");
 
+  stackDisplacement[scopeId].clear();
+
   return scope;
 }
 
 std::vector<std::string> Parser::ParseIR(std::string const &filename,
                                          Tree const &program,
                                          SymbolsTable const &symbols) {
+  stackDisplacement.clear();
+
   std::vector<std::string> ir;
   ir.push_back("#");
   ir.push_back("# " + filename);
@@ -468,4 +489,58 @@ std::vector<std::string> Parser::ParseIR(std::string const &filename,
   ir.push_back("# end program");
   ir.push_back("htl");
   return ir;
+}
+
+std::vector<std::bitset<8>>
+Parser::ParseMachineCode(std::vector<std::string> const &ir) {
+  std::vector<std::bitset<8>> machinecode;
+
+  bool skipNext = false;
+  for (auto const &entry : ir) {
+    if (skipNext) {
+      skipNext = false;
+      continue;
+    }
+
+    if (entry == "" || entry.rfind("#", 0) == 0) {
+      // skip
+      continue;
+    }
+
+    if (entry.rfind("%", 0) == 0) {
+      // immediate operand
+      machinecode.push_back(atoi(entry.substr(1, entry.size()).c_str()));
+      continue;
+    }
+
+    if (entry.rfind("off", 0) == 0) {
+      // offset is 16 bits
+      auto offset = machinecode.size() - 1;
+      auto const displacement = atoi(entry.substr(4, entry.size()).c_str());
+      if (entry[3] == '+') {
+        offset += displacement;
+      } else {
+        offset -= displacement;
+      }
+
+      machinecode.push_back(offset >> 8);
+      machinecode.push_back(offset);
+      skipNext = true;
+      continue;
+    }
+
+    if (entry.rfind("^", 0) == 0) {
+      machinecode.push_back(atoi(entry.substr(1, entry.size()).c_str()));
+      continue;
+    }
+
+    auto const [success, opcode] = StringToOpcode(entry);
+    if (success) {
+      machinecode.push_back((int)opcode);
+    } else {
+      spdlog::error("Unsupported instruction: {}", entry);
+    }
+  }
+
+  return machinecode;
 }

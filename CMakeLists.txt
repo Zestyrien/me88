@@ -9,6 +9,7 @@ project(me88Compiler)
 # add the executable
 add_executable(
   me88Compiler
+  ./common/opcode.cpp
   ./compiler/src/main.cpp
   ./compiler/src/lexy.cpp
   ./compiler/src/token.cpp
@@ -17,12 +18,13 @@ add_executable(
   ./compiler/src/tree.cpp
   ./compiler/src/symbolstable.cpp
   ./compiler/src/symbolstable.cpp
-  ./compiler/src/parser.cpp
+  ./compiler/src/parser.cpp  
 )
 
 #add tests executable 
 add_executable(
   me88CompilerTests 
+  ./common/opcode.cpp
   ./compiler/src/tests/mainTest.cpp 
   ./compiler/src/lexy.cpp
   ./compiler/src/token.cpp

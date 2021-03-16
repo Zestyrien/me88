@@ -3,11 +3,11 @@
 #include <memory>
 #include <unistd.h>
 
-#include "lexy.h"
 #include "ast.h"
+#include "lexy.h"
+#include "parser.h"
 #include "semantic.h"
 #include "token.h"
-#include "parser.h"
 
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/spdlog.h"
@@ -45,16 +45,17 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-/*
-  auto machinecode = GenerateCode(AST, symbols);
-
-  std::ofstream outfile(std::string(fileName) + ".bin");
-  for (auto code : machinecode) {
-    outfile << code << std::endl;
+  auto const ir = Parser::ParseIR(fileName, AST, symbols);
+  std::ofstream outirfile(std::string(fileName) + ".ir");
+  for (auto const &entry : ir) {
+    outirfile << entry << std::endl;
   }
-*/
-
-  auto const ir = Parser::ParseIR(AST, symbols);
+  
+  auto const machinecode = Parser::ParseMachineCode(ir);
+  std::ofstream outcodefile(std::string(fileName) + ".bin");
+  for (auto const &code : machinecode) {
+    outcodefile << code << std::endl;
+  }
 
   return 0;
 }
