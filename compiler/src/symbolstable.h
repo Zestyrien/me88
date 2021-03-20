@@ -5,14 +5,16 @@
 #include <tuple>
 #include <unordered_map>
 
-enum class SymbolType {
+enum class SymbolType
+{
   Variable = 0,
   FunctionDefinition,
   FunctionCall,
   FunctionArg
 };
 
-struct Symbol {
+struct Symbol
+{
   SymbolType symbolTp;
   bool isAssigned;
   int occurrences;
@@ -23,7 +25,8 @@ struct Symbol {
   void Print() const;
 };
 
-struct Scope {
+struct Scope
+{
   Scope() = delete;
   Scope(int parentId);
   Scope(int parentId, bool isFunctionScope);
@@ -33,7 +36,8 @@ struct Scope {
   void Print(int id) const;
 };
 
-class SymbolsTable {
+class SymbolsTable
+{
 public:
   bool IsFunctionArgument(std::string const &variable,
                           int const &scopeId) const;

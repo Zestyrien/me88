@@ -7,7 +7,8 @@
 #include <unordered_map>
 #include <vector>
 
-class CodeGenerator {
+class CodeGenerator
+{
 public:
   void Push();
   void PushArgument();
@@ -54,12 +55,14 @@ public:
   std::unordered_map<std::string, std::shared_ptr<Tree>> m_funBodies;
 
 private:
-  struct StackVariable {
+  struct StackVariable
+  {
     std::vector<int> position;
     SymbolType type;
   };
 
-  struct StackFrame {
+  struct StackFrame
+  {
     std::unordered_map<std::string, StackVariable> varToAddr;
     int varCount = 0;
     int argCount = 0;

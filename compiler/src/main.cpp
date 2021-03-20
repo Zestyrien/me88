@@ -12,9 +12,11 @@
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/spdlog.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 #ifdef NDEBUG
-  if (argc == 1) {
+  if (argc == 1)
+  {
     spdlog::error("Missing file name.");
     return 0;
   }
@@ -27,7 +29,8 @@ int main(int argc, char *argv[]) {
 #endif
   auto [validToks, tokens] = Lexer::GetTokensFromFile(fileName);
 
-  if (!validToks) {
+  if (!validToks)
+  {
     return 0;
   }
 
@@ -36,24 +39,28 @@ int main(int argc, char *argv[]) {
 #endif
 
   auto const [validProg, AST] = CreateAST(tokens);
-  if (!validProg) {
+  if (!validProg)
+  {
     return 0;
   }
 
   auto const [validSemantic, symbols] = AnalyzeSemantic(AST);
-  if (!validSemantic) {
+  if (!validSemantic)
+  {
     return 0;
   }
 
   auto const ir = Parser::ParseIR(fileName, AST, symbols);
   std::ofstream outirfile(std::string(fileName) + ".ir");
-  for (auto const &entry : ir) {
+  for (auto const &entry : ir)
+  {
     outirfile << entry << std::endl;
   }
-  
+
   auto const machinecode = Parser::ParseMachineCode(ir);
   std::ofstream outcodefile(std::string(fileName) + ".bin");
-  for (auto const &code : machinecode) {
+  for (auto const &code : machinecode)
+  {
     outcodefile << code << std::endl;
   }
 

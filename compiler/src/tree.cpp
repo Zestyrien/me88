@@ -6,24 +6,29 @@
 
 int uniqueScopeId = 0;
 
-int GetNewScopeId() {
+int GetNewScopeId()
+{
   uniqueScopeId++;
   return uniqueScopeId;
 }
 
-Tree::Tree(int parentScope) : m_parentScopeId(parentScope) {
+Tree::Tree(int parentScope) : m_parentScopeId(parentScope)
+{
   m_scopeId = GetNewScopeId();
 }
 
-void Tree::AddNode(std::shared_ptr<Node> &node) {
-  if (node == nullptr) {
+void Tree::AddNode(std::shared_ptr<Node> &node)
+{
+  if (node == nullptr)
+  {
     return;
   }
 
   m_nodes.push_back(node);
 }
 
-const std::vector<std::shared_ptr<Node>> &Tree::GetNodes() const {
+const std::vector<std::shared_ptr<Node>> &Tree::GetNodes() const
+{
   return m_nodes;
 }
 
@@ -31,8 +36,10 @@ int Tree::GetScopeId() const { return m_scopeId; }
 
 int Tree::GetParentScopeId() const { return m_parentScopeId; }
 
-void Tree::Print() const {
-  for (const auto &node : m_nodes) {
+void Tree::Print() const
+{
+  for (const auto &node : m_nodes)
+  {
     std::cout << std::endl;
     node->Print();
     std::cout << std::endl;
@@ -42,7 +49,8 @@ void Tree::Print() const {
 Node::Node() {}
 
 Node::Node(const NodeType tp, const std::string &val, int line)
-    : m_type(tp), m_value(val), m_line(line) {
+    : m_type(tp), m_value(val), m_line(line)
+{
 }
 
 const std::shared_ptr<Node> &Node::GetLeft() { return m_left; }
@@ -67,8 +75,10 @@ void Node::SetValue(const std::string &val) { m_value = val; }
 
 int Node::GetLine() { return m_line; }
 
-void Node::Print() const {
-  if (m_left != nullptr) {
+void Node::Print() const
+{
+  if (m_left != nullptr)
+  {
     std::cout << "{L-> ";
     m_left->Print();
     std::cout << "} ";
@@ -78,13 +88,15 @@ void Node::Print() const {
   std::cout << m_value;
   std::cout << " ] ";
 
-  if (m_tree != nullptr) {
+  if (m_tree != nullptr)
+  {
     std::cout << "{S-> ";
     m_tree->Print();
     std::cout << "} ";
   }
 
-  if (m_right != nullptr) {
+  if (m_right != nullptr)
+  {
     std::cout << "{R-> ";
     m_right->Print();
     std::cout << "} ";

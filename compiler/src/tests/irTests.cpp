@@ -98,8 +98,6 @@ TEST(IR, ir_variableDeclarationAssignement) {
 
   EXPECT_EQ(ir.size(), expectedResult.size());
   if (ir.size() != expectedResult.size()) {
-    Print(ir);
-    Print(expectedResult);
     return;
   }
 
@@ -963,7 +961,6 @@ TEST(IR, ir_voidWithArgs) {
 
   EXPECT_EQ(ir.size(), expectedResult.size());
   if (ir.size() != expectedResult.size()) {
-    // Print(ir);
     return;
   }
 

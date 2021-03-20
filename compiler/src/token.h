@@ -2,7 +2,8 @@
 
 #include <string>
 
-enum class TokenType {
+enum class TokenType
+{
   Type = 0,
   Variable,
   Operator,
@@ -25,7 +26,8 @@ enum class TokenType {
   Unknown
 };
 
-class Token {
+class Token
+{
 public:
   Token() = delete;
   Token(const std::string &str, int line);

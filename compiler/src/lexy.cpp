@@ -9,11 +9,13 @@
 #include "spdlog/spdlog.h"
 
 std::tuple<bool, std::vector<Token>>
-Lexer::GetTokensFromFile(const std::string &filename) {
+Lexer::GetTokensFromFile(const std::string &filename)
+{
   std::vector<Token> tokens;
   std::ifstream file;
   file.open(filename);
-  if (!file.is_open()) {
+  if (!file.is_open())
+  {
     spdlog::error("Can't open file.");
     return {false, tokens};
   };
@@ -22,46 +24,61 @@ Lexer::GetTokensFromFile(const std::string &filename) {
   std::string tok;
   std::string lastTok;
   int line = 1;
-  while (file.get(c)) {
+  while (file.get(c))
+  {
 
     bool isComment = c == '#';
-    
-    if (isComment) {
-      while (file.get(c)) {
-        if (c == '\n') {
+
+    if (isComment)
+    {
+      while (file.get(c))
+      {
+        if (c == '\n')
+        {
           break;
         }
       }
     }
 
     bool isendl = c == '\n';
-    if (isspace(c) || isendl) {
-      if (isendl) {
+    if (isspace(c) || isendl)
+    {
+      if (isendl)
+      {
         line++;
       }
 
-      if (tok != "" && !Token::IsToken(tok) && !Token::IsToken(lastTok + tok)) {
+      if (tok != "" && !Token::IsToken(tok) && !Token::IsToken(lastTok + tok))
+      {
         spdlog::error("Syntax error, '{}' not recognised at line {}", tok,
                       line);
         return {false, tokens};
-      } else {
+      }
+      else
+      {
         lastTok = "";
         continue;
       }
-    } else {
+    }
+    else
+    {
       tok += c;
     }
 
     bool add = false;
-    if (tokens.size() > 0 && lastTok != "" && Token::IsToken(lastTok + tok)) {
+    if (tokens.size() > 0 && lastTok != "" && Token::IsToken(lastTok + tok))
+    {
       tokens.pop_back();
       tok = lastTok + tok;
       add = true;
-    } else if (Token::IsToken(tok)) {
+    }
+    else if (Token::IsToken(tok))
+    {
       add = true;
     }
 
-    if (add) {
+    if (add)
+    {
       tokens.emplace_back(tok, line);
       lastTok = tok.c_str();
       tok = "";
@@ -71,13 +88,15 @@ Lexer::GetTokensFromFile(const std::string &filename) {
   return {true, tokens};
 }
 
-void Lexer::PrintTokens(const std::vector<Token> &tokens) {
+void Lexer::PrintTokens(const std::vector<Token> &tokens)
+{
   std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
             << std::endl;
   std::cout << "-----------------------TOKENS-----------------------"
             << std::endl;
 
-  for (const auto &tok : tokens) {
+  for (const auto &tok : tokens)
+  {
     std::cout << "{ ";
     tok.Print();
     std::cout << " }" << std::endl;

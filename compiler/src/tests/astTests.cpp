@@ -4,7 +4,8 @@
 #include "../ast.h"
 #include "../lexy.h"
 
-TEST(AST, CreateAST_Empty) {
+TEST(AST, CreateAST_Empty)
+{
   std::string filename = "fakeTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
@@ -15,7 +16,8 @@ TEST(AST, CreateAST_Empty) {
   EXPECT_TRUE(validProg);
 }
 
-TEST(AST, CreateAST_VariableDeclaration) {
+TEST(AST, CreateAST_VariableDeclaration)
+{
   std::string filename = "../compiler/src/tests/files/ast/variableDeclarationTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
@@ -47,7 +49,8 @@ TEST(AST, CreateAST_VariableDeclaration) {
   EXPECT_EQ(left->GetLine(), 1);
 }
 
-TEST(AST, CreateAST_VariableDeclarationAssignement) {
+TEST(AST, CreateAST_VariableDeclarationAssignement)
+{
   std::string filename =
       "../compiler/src/tests/files/ast/variableDeclarationAssignementTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
@@ -87,7 +90,8 @@ TEST(AST, CreateAST_VariableDeclarationAssignement) {
   EXPECT_EQ(right->GetTree(), nullptr);
 }
 
-TEST(AST, CreateAST_IfNoElse) {
+TEST(AST, CreateAST_IfNoElse)
+{
   std::string filename = "../compiler/src/tests/files/ast/ifNoElseTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
@@ -138,7 +142,8 @@ TEST(AST, CreateAST_IfNoElse) {
   EXPECT_EQ(ifBodyNodes.size(), 2);
 }
 
-TEST(AST, CreateAST_IfElse) {
+TEST(AST, CreateAST_IfElse)
+{
   std::string filename = "../compiler/src/tests/files/ast/ifElseTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
@@ -201,7 +206,8 @@ TEST(AST, CreateAST_IfElse) {
   EXPECT_EQ(ifBodyNodes.size(), 2);
 }
 
-TEST(AST, CreateAST_While) {
+TEST(AST, CreateAST_While)
+{
   std::string filename = "../compiler/src/tests/files/ast/whileTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
@@ -237,7 +243,8 @@ TEST(AST, CreateAST_While) {
   EXPECT_EQ(whileBodyNodes.size(), 2);
 }
 
-TEST(AST, Create_EmptyVoid) {
+TEST(AST, Create_EmptyVoid)
+{
   std::string filename = "../compiler/src/tests/files/ast/emptyVoidTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
@@ -283,7 +290,8 @@ TEST(AST, Create_EmptyVoid) {
   EXPECT_EQ(funCall->GetLeft(), nullptr);
 }
 
-TEST(AST, Create_VoidWithArgs) {
+TEST(AST, Create_VoidWithArgs)
+{
   std::string filename = "../compiler/src/tests/files/ast/voidWithArgsTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 

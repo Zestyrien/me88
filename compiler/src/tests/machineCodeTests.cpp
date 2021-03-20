@@ -10,11 +10,13 @@
 // std::string const basePath = "../compiler/src/tests/files/ast/";
 
 auto const PrintMC = [](std::vector<std::bitset<8>> const &code) {
-  for (auto const &entry : code) {
+  for (auto const &entry : code)
+  {
     std::cout << entry.to_string() << std::endl;
   }
 };
-TEST(machineCode, mc_variableDeclaration) {
+TEST(machineCode, mc_variableDeclaration)
+{
   std::string filename = basePath + "variableDeclarationTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   EXPECT_TRUE(validToks);
@@ -31,17 +33,20 @@ TEST(machineCode, mc_variableDeclaration) {
   auto const machineCode = Parser::ParseMachineCode(ir);
 
   EXPECT_EQ(machineCode.size(), expectedResult.size());
-  if (machineCode.size() != expectedResult.size()) {
+  if (machineCode.size() != expectedResult.size())
+  {
     PrintMC(machineCode);
     return;
   }
 
-  for (size_t i = 0; i < machineCode.size(); i++) {
+  for (size_t i = 0; i < machineCode.size(); i++)
+  {
     EXPECT_EQ(machineCode[i], expectedResult[i]);
   }
 }
 
-TEST(machineCode, mc_variableAssignement) {
+TEST(machineCode, mc_DeclarationAssignement)
+{
   std::string filename = basePath + "variableDeclarationAssignementTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   EXPECT_TRUE(validToks);
@@ -52,18 +57,24 @@ TEST(machineCode, mc_variableAssignement) {
   auto const [validSemantic, symbols] = AnalyzeSemantic(AST);
   EXPECT_TRUE(validSemantic);
 
-  auto const ir = Parser::ParseIR("variableDeclarationAssignementTest.F7", AST, symbols);
+  auto const ir =
+      Parser::ParseIR("variableDeclarationAssignementTest.F7", AST, symbols);
 
-  std::vector<std::bitset<8>> expectedResult = {0b00010101};
+  std::vector<std::bitset<8>> expectedResult = {
+      0b00001011, 0b01100000, 0b00000101, 0b00001011,
+      0b00000100, 0b00000111, 0b11100010, 0b01100011,
+      0b00000001, 0b00001010, 0b00001100, 0b01000000,
+      0b01100000, 0b00000001, 0b00001100, 0b00010101};
   auto const machineCode = Parser::ParseMachineCode(ir);
 
   EXPECT_EQ(machineCode.size(), expectedResult.size());
-  if (machineCode.size() != expectedResult.size()) {
-    PrintMC(machineCode);
+  if (machineCode.size() != expectedResult.size())
+  {
     return;
   }
 
-  for (size_t i = 0; i < machineCode.size(); i++) {
+  for (size_t i = 0; i < machineCode.size(); i++)
+  {
     EXPECT_EQ(machineCode[i], expectedResult[i]);
   }
 }

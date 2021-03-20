@@ -5,29 +5,34 @@
 #include "spdlog/spdlog.h"
 
 void ParseExpression8Bits(const std::shared_ptr<Node> &node,
-                          CodeGenerator &code) {
+                          CodeGenerator &code)
+{
   // expressions leave the result in al
   auto ndvalue = node->GetValue();
   auto ndtype = node->GetType();
-  if (ndtype == NodeType::Number) {
+  if (ndtype == NodeType::Number)
+  {
     code.LoadAL(std::stoi(ndvalue));
     return;
   }
 
-  if (ndtype == NodeType::Variable) {
+  if (ndtype == NodeType::Variable)
+  {
     code.LoadAL(ndvalue);
     return;
   }
 
   auto right = node->GetRight();
-  if (right != nullptr) {
+  if (right != nullptr)
+  {
     // evaluate the right expression
     ParseExpression8Bits(right, code);
   }
 
   auto left = node->GetLeft();
   // Assignement
-  if (ndvalue == ":=") {
+  if (ndvalue == ":=")
+  {
     // assignement must have a variable on the left
     // and an expression on the right
     code.AddAssignement(left->GetValue());
@@ -39,32 +44,57 @@ void ParseExpression8Bits(const std::shared_ptr<Node> &node,
   // it is sitting in al
   auto lftype = left->GetType();
   auto lfvalue = left->GetValue();
-  if (lftype == NodeType::Variable) {
-    if (ndvalue == "+") {
+  if (lftype == NodeType::Variable)
+  {
+    if (ndvalue == "+")
+    {
       code.AddDSDI(lfvalue);
-    } else if (ndvalue == "-") {
+    }
+    else if (ndvalue == "-")
+    {
       code.SubDSDI(lfvalue);
-    } else if (ndvalue == ">") {
+    }
+    else if (ndvalue == ">")
+    {
       code.EvalBelowDSDI(lfvalue);
-    } else if (ndvalue == "<") {
+    }
+    else if (ndvalue == "<")
+    {
       code.EvalAboveDSDI(lfvalue);
-    } else if (ndvalue == "==") {
+    }
+    else if (ndvalue == "==")
+    {
       code.EvalEqualDSDI(lfvalue);
-    } else if (ndvalue == "!=") {
+    }
+    else if (ndvalue == "!=")
+    {
       code.EvalNotEqualDSDI(lfvalue);
     }
-  } else {
-    if (ndvalue == "+") {
+  }
+  else
+  {
+    if (ndvalue == "+")
+    {
       code.Add(std::stoi(lfvalue));
-    } else if (ndvalue == "-") {
+    }
+    else if (ndvalue == "-")
+    {
       code.Sub(std::stoi(lfvalue));
-    } else if (ndvalue == ">") {
+    }
+    else if (ndvalue == ">")
+    {
       code.EvalBelow(std::stoi(lfvalue));
-    } else if (ndvalue == "<") {
+    }
+    else if (ndvalue == "<")
+    {
       code.EvalAbove(std::stoi(lfvalue));
-    } else if (ndvalue == "==") {
+    }
+    else if (ndvalue == "==")
+    {
       code.EvalEqual(std::stoi(lfvalue));
-    } else if (ndvalue == "!=") {
+    }
+    else if (ndvalue == "!=")
+    {
       code.EvalNotEqual(std::stoi(lfvalue));
     }
   }
@@ -88,7 +118,8 @@ void CreateFunFrame(const std::shared_ptr<Tree> &tree,
                     const SymbolsTable &symbols, CodeGenerator &code);
 
 void ParseWhile(const std::shared_ptr<Node> &node, const SymbolsTable &symbols,
-                CodeGenerator &code) {
+                CodeGenerator &code)
+{
   auto whilebody = node->GetTree();
 
   // this is where we jump after the loop is executed
@@ -103,7 +134,8 @@ void ParseWhile(const std::shared_ptr<Node> &node, const SymbolsTable &symbols,
   code.JmpNE();
   auto whileblockPlaceholder = code.CreateJumpPlaceholder();
 
-  if (whilebody != nullptr) {
+  if (whilebody != nullptr)
+  {
     ParseScope(whilebody, symbols, code);
   }
 
@@ -112,7 +144,8 @@ void ParseWhile(const std::shared_ptr<Node> &node, const SymbolsTable &symbols,
 }
 
 void ParseIf(const std::shared_ptr<Node> &node, const SymbolsTable &symbols,
-             CodeGenerator &code) {
+             CodeGenerator &code)
+{
 
   // condition will be evaluated and put in al
   ParseExpression8Bits(node->GetLeft(), code);
@@ -121,7 +154,8 @@ void ParseIf(const std::shared_ptr<Node> &node, const SymbolsTable &symbols,
   auto ifbodyTree = ndbodies->GetLeft()->GetTree();
   auto ndbodieselse = ndbodies->GetRight();
   std::shared_ptr<Tree> elsebodyTree = nullptr;
-  if (ndbodieselse != nullptr) {
+  if (ndbodieselse != nullptr)
+  {
     elsebodyTree = ndbodieselse->GetTree();
   }
 
@@ -132,23 +166,28 @@ void ParseIf(const std::shared_ptr<Node> &node, const SymbolsTable &symbols,
   // TO DO optimize jumps in case of empty if block
   auto ifblockPlaceholder = code.CreateJumpPlaceholder();
 
-  if (ifbodyTree != nullptr) {
+  if (ifbodyTree != nullptr)
+  {
     ParseScope(ifbodyTree, symbols, code);
   }
 
-  if (elsebodyTree != nullptr) {
+  if (elsebodyTree != nullptr)
+  {
     code.Jmp();
     auto elseblockPlaceholder = code.CreateJumpPlaceholder();
     code.ReplaceJumpPlaceholder(ifblockPlaceholder);
     ParseScope(elsebodyTree, symbols, code);
     code.ReplaceJumpPlaceholder(elseblockPlaceholder);
-  } else {
+  }
+  else
+  {
     code.ReplaceJumpPlaceholder(ifblockPlaceholder);
   }
 }
 
 void ParseFunctionDefinition(const std::shared_ptr<Node> &node,
-                             const SymbolsTable &symbols, CodeGenerator &code) {
+                             const SymbolsTable &symbols, CodeGenerator &code)
+{
 
   auto ndFunName = node->GetLeft();
   auto funName = ndFunName->GetValue();
@@ -178,7 +217,8 @@ void ParseFunctionDefinition(const std::shared_ptr<Node> &node,
 }
 
 void ParseFunctionCall(const std::shared_ptr<Node> &node,
-                       const SymbolsTable &symbols, CodeGenerator &code) {
+                       const SymbolsTable &symbols, CodeGenerator &code)
+{
   auto funName = node->GetValue();
   auto argTree = node->GetTree();
   auto argNods = argTree->GetNodes();
@@ -223,27 +263,33 @@ void ParseFunctionCall(const std::shared_ptr<Node> &node,
 
 void ParseScope(const std::shared_ptr<Tree> &tree, const SymbolsTable &symbols,
                 CodeGenerator &code,
-                const std::vector<std::shared_ptr<Node>> &args) {
+                const std::vector<std::shared_ptr<Node>> &args)
+{
   auto scopeId = tree->GetScopeId();
   auto [success, entries] = symbols.GetSymbolsInScope(scopeId);
 
-  if (!success) {
+  if (!success)
+  {
     spdlog::error("Congratulazioni! This message should never be seen, please "
                   "open a issue on github this is a bug for sure! Please "
                   "attach your F7 code.");
     return;
   }
 
-  for (auto entry : entries) {
-    if (entry->symbolTp == SymbolType::Variable) {
+  for (auto entry : entries)
+  {
+    if (entry->symbolTp == SymbolType::Variable)
+    {
       // push in the stack variables in the scope
       code.Push();
     }
   }
 
-  for (auto node : tree->GetNodes()) {
+  for (auto node : tree->GetNodes())
+  {
     // ParseNode(node, symbols, code);
-    switch (node->GetType()) {
+    switch (node->GetType())
+    {
     case NodeType::Variable:
       // var declaration ignore
       break;
@@ -272,12 +318,14 @@ void ParseScope(const std::shared_ptr<Tree> &tree, const SymbolsTable &symbols,
 
 void PushArguments(const std::shared_ptr<Tree> &tree,
                    const SymbolsTable &symbols, CodeGenerator &code,
-                   std::vector<std::shared_ptr<Node>> argnodes) {
+                   std::vector<std::shared_ptr<Node>> argnodes)
+{
 
   auto scopeId = tree->GetScopeId();
   auto [success, entries] = symbols.GetVariablesInFrame(scopeId);
 
-  if (!success) {
+  if (!success)
+  {
     spdlog::error("Congratulazioni! This message should never be seen, please "
                   "open a issue on github this is a bug for sure! Please "
                   "attach your F7 code.");
@@ -286,22 +334,24 @@ void PushArguments(const std::shared_ptr<Tree> &tree,
 
   code.SetPushingFunctionArgs(true);
 
-  for (auto &node : argnodes) {
+  for (auto &node : argnodes)
+  {
     ParseExpression8Bits(node, code);
     code.PushArgument();
   }
-  
-  code.SetPushingFunctionArgs(false);
 
+  code.SetPushingFunctionArgs(false);
 }
 
 void CreateFunFrame(const std::shared_ptr<Tree> &tree,
-                    const SymbolsTable &symbols, CodeGenerator &code) {
+                    const SymbolsTable &symbols, CodeGenerator &code)
+{
 
   auto scopeId = tree->GetScopeId();
   auto [success, entries] = symbols.GetVariablesInFrame(scopeId);
 
-  if (!success) {
+  if (!success)
+  {
     spdlog::error("Congratulazioni! This message should never be seen, please "
                   "open a issue on github this is a bug for sure! Please "
                   "attach your F7 code.");
@@ -310,15 +360,19 @@ void CreateFunFrame(const std::shared_ptr<Tree> &tree,
 
   code.NewFunFrame();
 
-  for (auto entry : entries) {
-    if (entry->symbolTp == SymbolType::FunctionArg) {
+  for (auto entry : entries)
+  {
+    if (entry->symbolTp == SymbolType::FunctionArg)
+    {
       // add arguments in the scope
       code.AddToStack(entry->name, SymbolType::FunctionArg);
     }
   }
 
-  for (auto entry : entries) {
-    if (entry->symbolTp == SymbolType::Variable) {
+  for (auto entry : entries)
+  {
+    if (entry->symbolTp == SymbolType::Variable)
+    {
       // add variables in the scope
       code.AddToStack(entry->name, SymbolType::Variable);
     }
@@ -328,20 +382,24 @@ void CreateFunFrame(const std::shared_ptr<Tree> &tree,
 void RemoveFrame(CodeGenerator &code) { code.RemoveFrame(); }
 
 void PopArguments(const std::shared_ptr<Tree> &tree,
-                  const SymbolsTable &symbols, CodeGenerator &code) {
+                  const SymbolsTable &symbols, CodeGenerator &code)
+{
 
   auto scopeId = tree->GetScopeId();
   auto [success, entries] = symbols.GetVariablesInFrame(scopeId);
 
-  if (!success) {
+  if (!success)
+  {
     spdlog::error("Congratulazioni! This message should never be seen. There "
                   "is a bug somewhere, please open a issue on github this is a "
                   "bug for sure! Please attach your F7 code.");
     return;
   }
 
-  for (auto entry : entries) {
-    if (entry->symbolTp == SymbolType::FunctionArg) {
+  for (auto entry : entries)
+  {
+    if (entry->symbolTp == SymbolType::FunctionArg)
+    {
       // remove arguments from the scope
       code.Pop();
     }
@@ -349,7 +407,8 @@ void PopArguments(const std::shared_ptr<Tree> &tree,
 }
 
 std::vector<std::bitset<8>> GenerateCode(const Tree &ast,
-                                         const SymbolsTable &symbols) {
+                                         const SymbolsTable &symbols)
+{
 
   CodeGenerator code;
   auto tree = std::make_shared<Tree>(ast);

@@ -3,8 +3,10 @@
 #include "spdlog/spdlog.h"
 #include <iostream>
 
-std::string PrintSymbolType(SymbolType tp) {
-  switch (tp) {
+std::string PrintSymbolType(SymbolType tp)
+{
+  switch (tp)
+  {
   case SymbolType::Variable:
     return "Variable";
   case SymbolType::FunctionDefinition:
@@ -18,15 +20,18 @@ std::string PrintSymbolType(SymbolType tp) {
   }
 }
 
-void Symbol::Print() const {
+void Symbol::Print() const
+{
   std::cout << "** " << PrintSymbolType(symbolTp) << " " << type << " " << name
             << " Occurrences: " << occurrences
             << " Assigned: " << (isAssigned ? "true" : "false") << std::endl;
 
-  if (funArgs.size() > 0) {
+  if (funArgs.size() > 0)
+  {
     std::cout << "Arguments: ";
 
-    for (const auto &arg : funArgs) {
+    for (const auto &arg : funArgs)
+    {
       std::cout << arg.first << " " << arg.second << " ";
     }
     std::cout << std::endl;
@@ -38,28 +43,34 @@ Scope::Scope(int parentId) : m_parentId(parentId), m_isFunction(false) {}
 Scope::Scope(int parentId, bool isFunctionScope)
     : m_parentId(parentId), m_isFunction(isFunctionScope){};
 
-void Scope::Print(int id) const {
+void Scope::Print(int id) const
+{
   std::cout << "------ Scope :" << id << " Parent: " << m_parentId << "------"
             << std::endl;
 
-  for (const auto &sy : m_symbols) {
+  for (const auto &sy : m_symbols)
+  {
     sy.second->Print();
   }
 }
 
 bool SymbolsTable::IsFunctionArgument(std::string const &variable,
-                                      int const &scopeId) const {
+                                      int const &scopeId) const
+{
   auto const [success, symbol] = GetSymbol(variable, scopeId);
-  if (success) {
+  if (success)
+  {
     return symbol->symbolTp == SymbolType::FunctionArg;
   }
   return false;
 }
 
 int SymbolsTable::GetFunctionArgumentIndex(std::string const &variable,
-                                           int const &scopeId) const {
+                                           int const &scopeId) const
+{
   auto const [success, symbol] = GetSymbol(variable, scopeId);
-  if (success) {
+  if (success)
+  {
     return symbol->index;
   }
   //TO DO there could be a bug here
@@ -69,7 +80,8 @@ int SymbolsTable::GetFunctionArgumentIndex(std::string const &variable,
 bool SymbolsTable::AddFunctionDefinition(
     const std::string &funName, const std::string &funType,
     const std::vector<std::pair<std::string, std::string>> &funArgs,
-    int scopeId) {
+    int scopeId)
+{
   Symbol newsymbol;
   newsymbol.symbolTp = SymbolType::FunctionDefinition;
   newsymbol.funArgs = funArgs;
@@ -83,7 +95,8 @@ bool SymbolsTable::AddFunctionDefinition(
 
 bool SymbolsTable::AddFunctionArgumentToScope(const std::string &argName,
                                               const std::string &argType,
-                                              int index, int scopeId) {
+                                              int index, int scopeId)
+{
   Symbol newsymbol;
   newsymbol.symbolTp = SymbolType::FunctionArg;
   newsymbol.isAssigned = true;
@@ -96,11 +109,14 @@ bool SymbolsTable::AddFunctionArgumentToScope(const std::string &argName,
 }
 
 std::tuple<bool, std::vector<std::pair<std::string, std::string>>>
-SymbolsTable::GetArgumentsForFunction(const std::string &funName) const {
-  for (const auto &scope : m_table) {
+SymbolsTable::GetArgumentsForFunction(const std::string &funName) const
+{
+  for (const auto &scope : m_table)
+  {
 
     auto symbol = scope.second->m_symbols.find(funName);
-    if (symbol != scope.second->m_symbols.end()) {
+    if (symbol != scope.second->m_symbols.end())
+    {
       return {true, symbol->second->funArgs};
     }
   }
@@ -108,19 +124,23 @@ SymbolsTable::GetArgumentsForFunction(const std::string &funName) const {
   return {false, std::vector<std::pair<std::string, std::string>>()};
 }
 
-void SymbolsTable::AddScope(int scopeId, int parentScopeId) {
+void SymbolsTable::AddScope(int scopeId, int parentScopeId)
+{
   m_table[scopeId] = std::make_shared<Scope>(parentScopeId);
 }
 
-void SymbolsTable::AddFunctionScope(int scopeId, int parentScopeId) {
+void SymbolsTable::AddFunctionScope(int scopeId, int parentScopeId)
+{
   m_table[scopeId] = std::make_shared<Scope>(parentScopeId, true);
 }
 
 std::tuple<bool, std::shared_ptr<Scope>>
-SymbolsTable::GetScope(int scopeId) const {
+SymbolsTable::GetScope(int scopeId) const
+{
 
   auto const it = m_table.find(scopeId);
-  if (it != m_table.end()) {
+  if (it != m_table.end())
+  {
     return {true, it->second};
   }
 
@@ -129,7 +149,8 @@ SymbolsTable::GetScope(int scopeId) const {
 
 bool SymbolsTable::AddVariableSymbolToScope(const std::string &varType,
                                             const std::string &varName,
-                                            int scopeId) {
+                                            int scopeId)
+{
 
   Symbol newsymbol;
   newsymbol.symbolTp = SymbolType::Variable;
@@ -142,14 +163,17 @@ bool SymbolsTable::AddVariableSymbolToScope(const std::string &varType,
 }
 
 bool SymbolsTable::AddSymbolToScope(std::shared_ptr<Symbol> newsymbol,
-                                    int scopeId) {
+                                    int scopeId)
+{
 
   auto [success, scope] = GetScope(scopeId);
-  if (!success) {
+  if (!success)
+  {
     spdlog::error("{} {} scope not found.", newsymbol->type, newsymbol->name);
   }
 
-  if (scope->m_symbols.find(newsymbol->name) != scope->m_symbols.end()) {
+  if (scope->m_symbols.find(newsymbol->name) != scope->m_symbols.end())
+  {
     spdlog::error("{} {} is already defined.", newsymbol->type,
                   newsymbol->name);
     return false;
@@ -161,21 +185,29 @@ bool SymbolsTable::AddSymbolToScope(std::shared_ptr<Symbol> newsymbol,
 
 bool SymbolsTable::AddSymbolOccurrence(
     const std::string &name, int scopeId,
-    const std::vector<std::string> &funArgs) {
+    const std::vector<std::string> &funArgs)
+{
   auto [success, symbol] = GetSymbol(name, scopeId, funArgs);
-  if (success) {
+  if (success)
+  {
     symbol->occurrences++;
-  } else {
+  }
+  else
+  {
     spdlog::error("{} is not defined.", name);
   }
   return success;
 }
 
-bool SymbolsTable::SetVariableAssigend(const std::string &name, int scopeId) {
+bool SymbolsTable::SetVariableAssigend(const std::string &name, int scopeId)
+{
   auto [success, symbol] = GetSymbol(name, scopeId);
-  if (success) {
+  if (success)
+  {
     symbol->isAssigned = true;
-  } else {
+  }
+  else
+  {
     spdlog::error("Assignement of {}, {} is not defined.", name, name);
   }
   return success;
@@ -183,39 +215,50 @@ bool SymbolsTable::SetVariableAssigend(const std::string &name, int scopeId) {
 
 std::tuple<bool, std::shared_ptr<Symbol>>
 SymbolsTable::GetSymbol(const std::string &name, int scopeId,
-                        const std::vector<std::string> &funArgsTypes) const {
-  if (m_table.find(scopeId) == m_table.end()) {
+                        const std::vector<std::string> &funArgsTypes) const
+{
+  if (m_table.find(scopeId) == m_table.end())
+  {
     return {false, nullptr};
   }
 
   auto scope = m_table.find(scopeId)->second;
 
   auto symbol = scope->m_symbols.find(name);
-  if (symbol == scope->m_symbols.end()) {
-    if (scope->m_parentId == 0 && scopeId == 0) {
+  if (symbol == scope->m_symbols.end())
+  {
+    if (scope->m_parentId == 0 && scopeId == 0)
+    {
       return {false, nullptr};
     }
 
     return GetSymbol(name, scope->m_parentId, funArgsTypes);
   }
 
-  if (symbol->second->symbolTp == SymbolType::FunctionDefinition) {
+  if (symbol->second->symbolTp == SymbolType::FunctionDefinition)
+  {
     // check arguments type
     bool valid = true;
     auto size = funArgsTypes.size();
 
-    if (size == symbol->second->funArgs.size()) {
-      for (int i = 0; i < funArgsTypes.size(); i++) {
-        if (funArgsTypes[i] != symbol->second->funArgs[i].first) {
+    if (size == symbol->second->funArgs.size())
+    {
+      for (int i = 0; i < funArgsTypes.size(); i++)
+      {
+        if (funArgsTypes[i] != symbol->second->funArgs[i].first)
+        {
           valid = false;
           break;
         }
       }
-    } else {
+    }
+    else
+    {
       valid = false;
     }
 
-    if (!valid) {
+    if (!valid)
+    {
       spdlog::error("Error in {} function call, argument mismatch.", name);
       return {false, nullptr};
     }
@@ -225,14 +268,17 @@ SymbolsTable::GetSymbol(const std::string &name, int scopeId,
 }
 
 std::tuple<bool, std::vector<std::shared_ptr<Symbol>>>
-SymbolsTable::GetSymbolsInScope(int scopeId) const {
+SymbolsTable::GetSymbolsInScope(int scopeId) const
+{
   std::vector<std::shared_ptr<Symbol>> ret;
 
-  if (m_table.find(scopeId) == m_table.end()) {
+  if (m_table.find(scopeId) == m_table.end())
+  {
     return {false, ret};
   }
   auto scope = m_table.find(scopeId)->second;
-  for (auto symbol : scope->m_symbols) {
+  for (auto symbol : scope->m_symbols)
+  {
     ret.push_back(symbol.second);
   }
 
@@ -240,18 +286,25 @@ SymbolsTable::GetSymbolsInScope(int scopeId) const {
 }
 
 std::tuple<bool, std::vector<std::shared_ptr<Symbol>>>
-SymbolsTable::GetVariablesInFrame(int scopeId) const {
+SymbolsTable::GetVariablesInFrame(int scopeId) const
+{
   std::vector<std::shared_ptr<Symbol>> ret;
 
-  for (const auto scope : m_table) {
-    if (scope.first == scopeId) {
-      for (auto symbol : scope.second->m_symbols) {
+  for (const auto scope : m_table)
+  {
+    if (scope.first == scopeId)
+    {
+      for (auto symbol : scope.second->m_symbols)
+      {
         ret.push_back(symbol.second);
       }
-    } else if (!scope.second->m_isFunction &&
-               scope.second->m_parentId == scopeId) {
+    }
+    else if (!scope.second->m_isFunction &&
+             scope.second->m_parentId == scopeId)
+    {
       auto [success, ret2] = GetVariablesInFrame(scope.first);
-      if (success) {
+      if (success)
+      {
         ret.insert(ret.end(), ret2.begin(), ret2.end());
       }
     }
@@ -261,15 +314,18 @@ SymbolsTable::GetVariablesInFrame(int scopeId) const {
 }
 
 bool SymbolsTable::IsDeclared(int scopeId,
-                              const std::string &symbolName) const {
+                              const std::string &symbolName) const
+{
   auto [success, sy] = GetSymbol(symbolName, scopeId);
   return success;
 }
 
 bool SymbolsTable::IsAssigned(int scopeId,
-                              const std::string &symbolName) const {
+                              const std::string &symbolName) const
+{
   auto [success, sy] = GetSymbol(symbolName, scopeId);
-  if (!success) {
+  if (!success)
+  {
     return false;
   }
 
@@ -279,22 +335,26 @@ bool SymbolsTable::IsAssigned(int scopeId,
 
 std::string
 SymbolsTable::GetSymbolStrType(int scopeId,
-                               const std::string &symbolName) const {
+                               const std::string &symbolName) const
+{
   auto [success, sy] = GetSymbol(symbolName, scopeId);
   // TO DO Error ?
-  if (!success) {
+  if (!success)
+  {
     return "";
   }
 
   return sy->type;
 }
 
-void SymbolsTable::Print() const {
+void SymbolsTable::Print() const
+{
   std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++"
             << std::endl;
   std::cout << "-------------------SYMBOLS  TABLE-------------------"
             << std::endl;
-  for (const auto &sc : m_table) {
+  for (const auto &sc : m_table)
+  {
     sc.second->Print(sc.first);
   }
   std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++"

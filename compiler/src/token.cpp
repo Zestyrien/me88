@@ -3,29 +3,34 @@
 #include <algorithm>
 #include <iostream>
 
-Token::Token(const std::string &str, int line) : m_value(str), m_line(line) {
+Token::Token(const std::string &str, int line) : m_value(str), m_line(line)
+{
   m_type = FindType(str);
 }
 
-bool Token::IsToken(const std::string &str) {
+bool Token::IsToken(const std::string &str)
+{
   return FindType(str) != TokenType::Unknown;
 }
 
 bool StartsWithLetter(const std::string &str) { return isalpha(str[0]); }
 
-bool IsAlphaNumeric(const std::string &str) {
+bool IsAlphaNumeric(const std::string &str)
+{
   return std::find_if(str.begin(), str.end(), [](char c) {
            return !(isalnum(c) || (c == ' '));
          }) == str.end();
 }
 
-bool IsOnlyNumbers(const std::string &str) {
+bool IsOnlyNumbers(const std::string &str)
+{
   return std::find_if(str.begin(), str.end(), [](char c) {
            return !(isdigit(c) || (c == ' '));
          }) == str.end();
 }
 
-TokenType Token::FindType(const std::string &str) {
+TokenType Token::FindType(const std::string &str)
+{
   if (str == "u8" || str == "void")
     return TokenType::Type;
   else if (str == ":=")
@@ -76,7 +81,8 @@ TokenType Token::GetType() const { return m_type; }
 
 int Token::GetLine() const { return m_line; }
 
-void Token::Print() const {
+void Token::Print() const
+{
   std::cout << "Type: [" << (int)m_type << "]";
   std::cout << " Value: [" << m_value << "]";
   std::cout << " Line: [" << m_line << "]";

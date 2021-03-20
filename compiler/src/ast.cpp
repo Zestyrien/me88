@@ -12,20 +12,26 @@ ParseStatement(const std::vector<Token> &tokens, const Tree &tree, int &index);
 
 std::tuple<bool, std::shared_ptr<Node>>
 ReverseParseExpression(const std::vector<Token> &tokens,
-                       const Tree &parentScope, int &index) {
+                       const Tree &parentScope, int &index)
+{
   std::shared_ptr<Node> expression = nullptr;
   std::shared_ptr<Node> lastOperand = nullptr;
   std::shared_ptr<Node> lastOperator = nullptr;
 
-  while (index != tokens.size()) {
+  while (index != tokens.size())
+  {
     auto itType = tokens[index].GetType();
-    if (itType == TokenType::Number || itType == TokenType::Variable) {
-      if (lastOperand == nullptr) {
+    if (itType == TokenType::Number || itType == TokenType::Variable)
+    {
+      if (lastOperand == nullptr)
+      {
         lastOperand = std::make_shared<Node>(
             tokens[index].GetType() == TokenType::Number ? NodeType::Number
                                                          : NodeType::Variable,
             tokens[index].GetValue(), tokens[index].GetLine());
-      } else if (lastOperator != nullptr) {
+      }
+      else if (lastOperator != nullptr)
+      {
         auto operand = std::make_shared<Node>(
             tokens[index].GetType() == TokenType::Number ? NodeType::Number
                                                          : NodeType::Variable,
@@ -33,34 +39,47 @@ ReverseParseExpression(const std::vector<Token> &tokens,
 
         lastOperator->SetLeft(operand);
 
-        if (expression == nullptr) {
+        if (expression == nullptr)
+        {
           lastOperator->SetRight(lastOperand);
-        } else {
+        }
+        else
+        {
           lastOperator->SetRight(expression);
         }
 
         expression = lastOperator;
         lastOperand = nullptr;
         lastOperator = nullptr;
-      } else {
+      }
+      else
+      {
         spdlog::error("Invalid expression, unexpected token {} at line {}",
                       tokens[index].GetValue(), tokens[index].GetLine());
         index++;
         return {false, nullptr};
       }
-    } else if (itType == TokenType::Operator) {
+    }
+    else if (itType == TokenType::Operator)
+    {
       lastOperator =
           std::make_shared<Node>(NodeType::Operator, tokens[index].GetValue(),
                                  tokens[index].GetLine());
-    } else if (itType == TokenType::Semicol || itType == TokenType::Then ||
-               itType == TokenType::Loop || itType == TokenType::Comma ||
-               itType == TokenType::CloseBracket) {
-      if (lastOperand != nullptr && lastOperator != nullptr) {
+    }
+    else if (itType == TokenType::Semicol || itType == TokenType::Then ||
+             itType == TokenType::Loop || itType == TokenType::Comma ||
+             itType == TokenType::CloseBracket)
+    {
+      if (lastOperand != nullptr && lastOperator != nullptr)
+      {
         lastOperator->SetLeft(lastOperand);
 
-        if (expression == nullptr) {
+        if (expression == nullptr)
+        {
           lastOperator->SetRight(lastOperand);
-        } else {
+        }
+        else
+        {
           lastOperator->SetRight(expression);
         }
 
@@ -71,7 +90,9 @@ ReverseParseExpression(const std::vector<Token> &tokens,
       }
 
       return {true, expression};
-    } else {
+    }
+    else
+    {
       break;
     }
 
@@ -86,22 +107,26 @@ ReverseParseExpression(const std::vector<Token> &tokens,
 
 std::tuple<bool, std::shared_ptr<Node>>
 ParseExpression(const std::vector<Token> &tokens, const Tree &parentScope,
-                int &index) {
-  if (tokens.size() == index) {
+                int &index)
+{
+  if (tokens.size() == index)
+  {
     spdlog::error("Invalid empty expression");
     return {false, nullptr};
   }
 
   auto currentTok = tokens[index];
   if (currentTok.GetType() != TokenType::Number ||
-      currentTok.GetType() != TokenType::Variable) {
+      currentTok.GetType() != TokenType::Variable)
+  {
     auto firstOp = std::make_shared<Node>(
         currentTok.GetType() == TokenType::Number ? NodeType::Number
                                                   : NodeType::Variable,
         currentTok.GetValue(), currentTok.GetLine());
 
     index++;
-    if (tokens.size() == index) {
+    if (tokens.size() == index)
+    {
       spdlog::error("Invalid expression termination at line {}",
                     currentTok.GetLine());
       return {false, nullptr};
@@ -112,16 +137,19 @@ ParseExpression(const std::vector<Token> &tokens, const Tree &parentScope,
         currentTok.GetType() == TokenType::Then ||
         currentTok.GetType() == TokenType::Loop ||
         currentTok.GetType() == TokenType::Comma ||
-        currentTok.GetType() == TokenType::CloseBracket) {
+        currentTok.GetType() == TokenType::CloseBracket)
+    {
       return {true, firstOp};
     }
 
     if (currentTok.GetType() == TokenType::Assign ||
-        currentTok.GetType() == TokenType::Operator) {
+        currentTok.GetType() == TokenType::Operator)
+    {
       auto op = std::make_shared<Node>(
           NodeType::Operator, currentTok.GetValue(), currentTok.GetLine());
       bool ret = false;
-      if (currentTok.GetType() == TokenType::Assign) {
+      if (currentTok.GetType() == TokenType::Assign)
+      {
 
         op->SetLeft(firstOp);
         index++;
@@ -129,10 +157,13 @@ ParseExpression(const std::vector<Token> &tokens, const Tree &parentScope,
         auto [success, expression] =
             ParseExpression(tokens, parentScope, index);
         ret = success;
-        if (success) {
+        if (success)
+        {
           op->SetRight(expression);
         }
-      } else {
+      }
+      else
+      {
         index--;
         auto [success, expression] =
             ReverseParseExpression(tokens, parentScope, index);
@@ -152,14 +183,16 @@ ParseExpression(const std::vector<Token> &tokens, const Tree &parentScope,
 }
 
 std::tuple<bool, std::shared_ptr<Node>>
-ParseIf(const std::vector<Token> &tokens, const Tree &parentScope, int &index) {
+ParseIf(const std::vector<Token> &tokens, const Tree &parentScope, int &index)
+{
   auto currentTok = tokens[index];
   auto ifnode = std::make_shared<Node>(NodeType::If, currentTok.GetValue(),
                                        currentTok.GetLine());
   index++;
 
   auto [validCond, condnode] = ParseExpression(tokens, parentScope, index);
-  if (!validCond) {
+  if (!validCond)
+  {
     spdlog::error("Failed to parse if condition at line {}",
                   currentTok.GetLine());
     return {false, nullptr};
@@ -175,13 +208,16 @@ ParseIf(const std::vector<Token> &tokens, const Tree &parentScope, int &index) {
 
   auto ifbodyTree = Tree(parentScope.GetScopeId());
   while (tokens[index].GetType() != TokenType::Else &&
-         tokens[index].GetType() != TokenType::EndIf) {
+         tokens[index].GetType() != TokenType::EndIf)
+  {
 
-    if (!ParseTree(tokens, ifbodyTree, index)) {
+    if (!ParseTree(tokens, ifbodyTree, index))
+    {
       return {false, nullptr};
     }
 
-    if (tokens.size() == index) {
+    if (tokens.size() == index)
+    {
       spdlog::error("Malformed if statement, missing endif at line {}",
                     tokens[index - 1].GetLine());
       return {false, nullptr};
@@ -191,18 +227,22 @@ ParseIf(const std::vector<Token> &tokens, const Tree &parentScope, int &index) {
   auto treeptr = std::make_shared<Tree>(ifbodyTree);
   ifbody->SetTree(treeptr);
 
-  if (tokens[index].GetType() == TokenType::Else) {
+  if (tokens[index].GetType() == TokenType::Else)
+  {
     auto elsebody = std::make_shared<Node>(NodeType::ElseBody, "Else body",
                                            tokens[index].GetLine());
     bodies->SetRight(elsebody);
 
     auto elsebodyTree = Tree(parentScope.GetScopeId());
-    while (tokens[index].GetType() != TokenType::EndIf) {
-      if (!ParseTree(tokens, elsebodyTree, index)) {
+    while (tokens[index].GetType() != TokenType::EndIf)
+    {
+      if (!ParseTree(tokens, elsebodyTree, index))
+      {
         return {false, nullptr};
       }
 
-      if (index == tokens.size()) {
+      if (index == tokens.size())
+      {
         spdlog::error("Malformed if statement, missing endif");
         return {false, nullptr};
       }
@@ -217,9 +257,11 @@ ParseIf(const std::vector<Token> &tokens, const Tree &parentScope, int &index) {
 
 std::tuple<bool, std::shared_ptr<Node>>
 ParseWhile(const std::vector<Token> &tokens, const Tree &parentScope,
-           int &index) {
+           int &index)
+{
 
-  if (tokens.size() == index) {
+  if (tokens.size() == index)
+  {
     return {false, nullptr};
   }
 
@@ -228,7 +270,8 @@ ParseWhile(const std::vector<Token> &tokens, const Tree &parentScope,
   index++;
 
   auto [validCond, condnode] = ParseExpression(tokens, parentScope, index);
-  if (!validCond) {
+  if (!validCond)
+  {
     spdlog::error("Failed to parse while condition at line {}",
                   tokens[index].GetLine());
     return {false, nullptr};
@@ -238,12 +281,15 @@ ParseWhile(const std::vector<Token> &tokens, const Tree &parentScope,
 
   auto whilebodytree = Tree(parentScope.GetScopeId());
 
-  while (tokens[index].GetType() != TokenType::EndLoop) {
-    if (!ParseTree(tokens, whilebodytree, index)) {
+  while (tokens[index].GetType() != TokenType::EndLoop)
+  {
+    if (!ParseTree(tokens, whilebodytree, index))
+    {
       return {false, nullptr};
     }
 
-    if (index == tokens.size()) {
+    if (index == tokens.size())
+    {
       spdlog::error("Malformed while statement, missing endloop");
       return {false, nullptr};
     }
@@ -260,12 +306,14 @@ ParseWhile(const std::vector<Token> &tokens, const Tree &parentScope,
 
 std::tuple<bool, std::shared_ptr<Node>>
 ParseDeclaration(const std::vector<Token> &tokens, const Tree &parentScope,
-                 int &index) {
+                 int &index)
+{
   auto varType = std::make_shared<Node>(
       NodeType::Type, tokens[index].GetValue(), tokens[index].GetLine());
   index++;
 
-  if (tokens[index].GetType() != TokenType::Variable) {
+  if (tokens[index].GetType() != TokenType::Variable)
+  {
     spdlog::error(
         "Variable must follow variable type, unexpected token {} at line {}",
         tokens[index].GetValue(), tokens[index].GetLine());
@@ -274,12 +322,14 @@ ParseDeclaration(const std::vector<Token> &tokens, const Tree &parentScope,
 
   index++;
 
-  if (tokens.size() != index) {
+  if (tokens.size() != index)
+  {
     if (tokens[index].GetType() == TokenType::Assign ||
         tokens[index].GetType() == TokenType::Semicol ||
         tokens[index].GetType() == TokenType::Comma ||
         tokens[index].GetType() == TokenType::OpenCurly ||
-        tokens[index].GetType() == TokenType::Column) {
+        tokens[index].GetType() == TokenType::Column)
+    {
       // basically turning:
       // 	i8 x := 5;
       // into:
@@ -303,41 +353,52 @@ ParseDeclaration(const std::vector<Token> &tokens, const Tree &parentScope,
 
 std::tuple<bool, std::shared_ptr<Node>>
 ParseFunctionDefinition(const std::vector<Token> &tokens,
-                        const Tree &parentScope, int &index) {
+                        const Tree &parentScope, int &index)
+{
   auto functionNode = std::make_shared<Node>(NodeType::Function, "Function",
                                              tokens[index].GetLine());
   auto [success, functionDeclaration] =
       ParseDeclaration(tokens, parentScope, index);
-  if (success) {
+  if (success)
+  {
     functionNode->SetLeft(functionDeclaration);
-  } else {
+  }
+  else
+  {
     return {false, nullptr};
   }
 
   index = index + 2; // skip to open curly
-  if (index >= tokens.size()) {
+  if (index >= tokens.size())
+  {
     // not possible isFunction check already checked for the curly
     spdlog::error("Error in function definition, this should never happen.");
     return {false, nullptr};
   }
 
   auto functionArguments = std::make_shared<Tree>(parentScope.GetScopeId());
-  while (tokens[index].GetType() != TokenType::OpenCurly) {
-    if (tokens[index].GetType() == TokenType::Comma) {
+  while (tokens[index].GetType() != TokenType::OpenCurly)
+  {
+    if (tokens[index].GetType() == TokenType::Comma)
+    {
       index++;
     }
 
     auto [success, declaration] = ParseDeclaration(tokens, parentScope, index);
-    if (success && declaration->GetType() != NodeType::Function) {
+    if (success && declaration->GetType() != NodeType::Function)
+    {
       functionArguments->AddNode(declaration);
-    } else {
+    }
+    else
+    {
       spdlog::error("Function definition unexpected token {} at line {}",
                     tokens[index].GetValue(), tokens[index].GetLine());
       return {false, nullptr};
     }
 
     index++;
-    if (index == tokens.size()) {
+    if (index == tokens.size())
+    {
       spdlog::error(
           "Invalid function definiition unexpected token {} at line {}",
           tokens[index - 1].GetValue(), tokens[index - 1].GetLine());
@@ -346,21 +407,27 @@ ParseFunctionDefinition(const std::vector<Token> &tokens,
   }
   functionDeclaration->SetTree(functionArguments);
 
-  if (tokens[index].GetType() == TokenType::OpenCurly) {
+  if (tokens[index].GetType() == TokenType::OpenCurly)
+  {
     index++;
   }
 
   auto functionBody = std::make_shared<Tree>(parentScope.GetScopeId());
-  while (tokens[index].GetType() != TokenType::CloseCurly) {
+  while (tokens[index].GetType() != TokenType::CloseCurly)
+  {
     auto [success, statement] = ParseStatement(tokens, parentScope, index);
-    if (success) {
+    if (success)
+    {
       functionBody->AddNode(statement);
-    } else {
+    }
+    else
+    {
       return {false, nullptr};
     }
   }
 
-  if (tokens[index].GetType() == TokenType::CloseCurly) {
+  if (tokens[index].GetType() == TokenType::CloseCurly)
+  {
     index++;
   }
 
@@ -371,7 +438,8 @@ ParseFunctionDefinition(const std::vector<Token> &tokens,
 
 std::tuple<bool, std::shared_ptr<Node>>
 ParseFunctionCall(const std::vector<Token> &tokens, const Tree &parentScope,
-                  int &index) {
+                  int &index)
+{
 
   auto functionNode =
       std::make_shared<Node>(NodeType::FunctionCall, tokens[index].GetValue(),
@@ -381,17 +449,22 @@ ParseFunctionCall(const std::vector<Token> &tokens, const Tree &parentScope,
 
   auto functionArguments = std::make_shared<Tree>(parentScope.GetScopeId());
 
-  while (tokens[index].GetType() != TokenType::CloseBracket) {
+  while (tokens[index].GetType() != TokenType::CloseBracket)
+  {
     auto [success, argument] = ParseExpression(tokens, parentScope, index);
-    if (!success) {
+    if (!success)
+    {
       return {false, nullptr};
     }
 
     functionArguments->AddNode(argument);
 
-    if (tokens[index].GetType() == TokenType::Comma) {
+    if (tokens[index].GetType() == TokenType::Comma)
+    {
       index++;
-    } else if (tokens[index].GetType() != TokenType::CloseBracket) {
+    }
+    else if (tokens[index].GetType() != TokenType::CloseBracket)
+    {
       spdlog::error("Function call unexpected token {} at line {}",
                     tokens[index].GetValue(), tokens[index].GetLine());
 
@@ -406,14 +479,16 @@ ParseFunctionCall(const std::vector<Token> &tokens, const Tree &parentScope,
   return {true, functionNode};
 }
 
-bool IsFunction(const std::vector<Token> &tokens, const int &index) {
+bool IsFunction(const std::vector<Token> &tokens, const int &index)
+{
   auto expectedColumn = index + 2;
   if (expectedColumn >= tokens.size())
     return false;
   return tokens[expectedColumn].GetType() == TokenType::Column;
 }
 
-bool IsFunctionCall(const std::vector<Token> &tokens, const int &index) {
+bool IsFunctionCall(const std::vector<Token> &tokens, const int &index)
+{
   auto expectedOpenBraket = index + 1;
   if (expectedOpenBraket >= tokens.size())
     return false;
@@ -421,7 +496,8 @@ bool IsFunctionCall(const std::vector<Token> &tokens, const int &index) {
 }
 
 std::tuple<bool, std::shared_ptr<Node>>
-ParseStatement(const std::vector<Token> &tokens, const Tree &tree, int &index) {
+ParseStatement(const std::vector<Token> &tokens, const Tree &tree, int &index)
+{
   // Statements can only begin with
   // 1- variable type: variable declaration
   // 2- variable name: expression
@@ -431,18 +507,25 @@ ParseStatement(const std::vector<Token> &tokens, const Tree &tree, int &index) {
   // 6- function declaration
   // 7- function call
 
-  switch (tokens[index].GetType()) {
+  switch (tokens[index].GetType())
+  {
   case TokenType::Type:
-    if (IsFunction(tokens, index)) {
+    if (IsFunction(tokens, index))
+    {
       return ParseFunctionDefinition(tokens, tree, index);
-    } else {
+    }
+    else
+    {
       return ParseDeclaration(tokens, tree, index);
     }
   case TokenType::Variable:
   case TokenType::Number:
-    if (IsFunctionCall(tokens, index)) {
+    if (IsFunctionCall(tokens, index))
+    {
       return ParseFunctionCall(tokens, tree, index);
-    } else {
+    }
+    else
+    {
       return ParseExpression(tokens, tree, index);
     }
   case TokenType::Semicol:
@@ -472,21 +555,26 @@ ParseStatement(const std::vector<Token> &tokens, const Tree &tree, int &index) {
   }
 }
 
-bool ParseTree(const std::vector<Token> &tokens, Tree &tree, int &index) {
+bool ParseTree(const std::vector<Token> &tokens, Tree &tree, int &index)
+{
   auto [success, node] = ParseStatement(tokens, tree, index);
-  if (success) {
+  if (success)
+  {
     tree.AddNode(node);
   }
 
   return success;
 }
 
-std::tuple<bool, Tree> CreateAST(const std::vector<Token> &tokens) {
+std::tuple<bool, Tree> CreateAST(const std::vector<Token> &tokens)
+{
   Tree tree(0);
   int index = 0;
   bool success = true;
-  while (success && index != tokens.size()) {
-    if (!ParseTree(tokens, tree, index)) {
+  while (success && index != tokens.size())
+  {
+    if (!ParseTree(tokens, tree, index))
+    {
       success = false;
     }
   }

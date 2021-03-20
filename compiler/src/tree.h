@@ -6,7 +6,8 @@
 #include <unordered_map>
 #include <vector>
 
-enum class NodeType {
+enum class NodeType
+{
   Empty = 0,
   Type,
   Variable,
@@ -27,7 +28,8 @@ enum class NodeType {
 
 class Node;
 
-class Tree {
+class Tree
+{
 private:
   std::vector<std::shared_ptr<Node>> m_nodes;
   int m_scopeId;
@@ -43,7 +45,8 @@ public:
   void Print() const;
 };
 
-class Node {
+class Node
+{
 private:
   std::shared_ptr<Node> m_left;
   std::shared_ptr<Node> m_right;
