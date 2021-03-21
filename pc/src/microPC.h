@@ -2,5 +2,5 @@
 
 namespace microPC
 {
-	void PowerOn(bool debugging = false);
+  void PowerOn(bool debugging = false);
 }
