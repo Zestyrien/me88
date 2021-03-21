@@ -8,6 +8,8 @@ std::unordered_map<int, std::unordered_map<std::string, int>> stackDisplacement;
 std::unordered_map<std::string, std::unordered_map<std::string, int>>
     argumentDisplacement;
 
+std::unordered_map<std::string, int> poundDisplacement;
+
 size_t CountOffset(std::vector<std::string> const &code)
 {
   // return the actual size of the code without comments and empy lines
@@ -25,7 +27,7 @@ size_t CountOffset(std::vector<std::string> const &code)
       continue;
     }
 
-    if (line.rfind("£", 0) == 0)
+    if (line.rfind("@", 0) == 0)
     {
       // skip function entry point placeholder
       continue;
@@ -395,7 +397,7 @@ ParseFunctionDefinition(std::shared_ptr<Node> const &node,
   definitioncode.push_back("off+" + std::to_string(offcount + 1));
   definitioncode.push_back("off+" + std::to_string(offcount + 1));
   // this is the entry point for the function call
-  definitioncode.push_back("£" + funName);
+  definitioncode.push_back("@" + funName);
   definitioncode.insert(definitioncode.end(), funscope.begin(), funscope.end());
   // return near
   definitioncode.push_back("retn");
@@ -588,14 +590,16 @@ Parser::ParseMachineCode(std::vector<std::string> const &ir)
     {
       // offset is 16 bits
       auto offset = machinecode.size() - 1;
-      auto const displacement = atoi(entry.substr(4, entry.size()).c_str());
       if (entry[3] == '+')
       {
-        offset += displacement;
+        offset += atoi(entry.substr(4, entry.size()).c_str());
       }
       else
       {
-        offset -= displacement;
+        // +2 because it needs to consider that offset was counted without the actual offset
+        // while this doesn't matter if we are jumping ahead it matter if we go back
+        // TO DO validate the -1
+        offset -= (atoi(entry.substr(4, entry.size()).c_str()) - 2 - 1);
       }
 
       machinecode.push_back(offset >> 8);
@@ -607,6 +611,21 @@ Parser::ParseMachineCode(std::vector<std::string> const &ir)
     if (entry.rfind("^", 0) == 0)
     {
       machinecode.push_back(atoi(entry.substr(1, entry.size()).c_str()));
+      continue;
+    }
+
+    if (entry.rfind("@", 0) == 0)
+    {
+      poundDisplacement[entry.substr(1, entry.size())] = machinecode.size() - 1;
+      continue;
+    }
+
+    if (entry.rfind("!", 0) == 0)
+    {
+      auto const offset = poundDisplacement[entry.substr(1, entry.size())];
+      machinecode.push_back(offset >> 8);
+      machinecode.push_back(offset);
+      skipNext = true;
       continue;
     }
 
