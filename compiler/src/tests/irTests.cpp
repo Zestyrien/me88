@@ -10,12 +10,14 @@
 std::string const basePath = "../compiler/src/tests/files/ast/";
 
 auto const Print = [](std::vector<std::string> const &code) {
-  for (auto const &entry : code) {
+  for (auto const &entry : code)
+  {
     std::cout << entry << std::endl;
   }
 };
 
-TEST(IR, ir_variableDeclaration) {
+TEST(IR, ir_variableDeclaration)
+{
   std::string filename = basePath + "variableDeclarationTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   EXPECT_TRUE(validToks);
@@ -40,16 +42,19 @@ TEST(IR, ir_variableDeclaration) {
                                              "htl"};
 
   EXPECT_EQ(ir.size(), expectedResult.size());
-  if (ir.size() != expectedResult.size()) {
+  if (ir.size() != expectedResult.size())
+  {
     return;
   }
 
-  for (size_t i = 0; i < ir.size(); i++) {
+  for (size_t i = 0; i < ir.size(); i++)
+  {
     EXPECT_EQ(ir[i], expectedResult[i]);
   }
 }
 
-TEST(IR, ir_variableDeclarationAssignement) {
+TEST(IR, ir_variableDeclarationAssignement)
+{
   std::string filename = basePath + "variableDeclarationAssignementTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   EXPECT_TRUE(validToks);
@@ -79,9 +84,9 @@ TEST(IR, ir_variableDeclarationAssignement) {
       "push_al",
       "mov_ss_ax",
       "mov_ax_ds",
-      "mov_bp_ax",
-      "sub_operand_al",
       "# displacement for a",
+      "sub_bp$offset_into_ax",
+      "^1",
       "^1",
       "mov_ax_di",
       "pop_al",
@@ -97,16 +102,19 @@ TEST(IR, ir_variableDeclarationAssignement) {
       "htl"};
 
   EXPECT_EQ(ir.size(), expectedResult.size());
-  if (ir.size() != expectedResult.size()) {
+  if (ir.size() != expectedResult.size())
+  {
     return;
   }
 
-  for (size_t i = 0; i < ir.size(); i++) {
+  for (size_t i = 0; i < ir.size(); i++)
+  {
     EXPECT_EQ(ir[i], expectedResult[i]);
   }
 }
 
-TEST(IR, ir_variableExpressions) {
+TEST(IR, ir_variableExpressions)
+{
   std::string filename = basePath + "variableExpressionsTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   EXPECT_TRUE(validToks);
@@ -136,9 +144,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for b",
+                                             "sub_bp$offset_into_ax",
+                                             "^2",
                                              "^2",
                                              "mov_ax_di",
                                              "pop_al",
@@ -155,9 +163,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for c",
+                                             "sub_bp$offset_into_ax",
+                                             "^1",
                                              "^1",
                                              "mov_ax_di",
                                              "pop_al",
@@ -170,9 +178,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for c",
+                                             "sub_bp$offset_into_ax",
+                                             "^1",
                                              "^1",
                                              "mov_ax_di",
                                              "pop_al",
@@ -182,9 +190,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for b",
+                                             "sub_bp$offset_into_ax",
+                                             "^2",
                                              "^2",
                                              "mov_ax_di",
                                              "pop_al",
@@ -193,9 +201,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for a",
+                                             "sub_bp$offset_into_ax",
+                                             "^3",
                                              "^3",
                                              "mov_ax_di",
                                              "pop_al",
@@ -208,9 +216,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for a",
+                                             "sub_bp$offset_into_ax",
+                                             "^3",
                                              "^3",
                                              "mov_ax_di",
                                              "pop_al",
@@ -220,9 +228,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for b",
+                                             "sub_bp$offset_into_ax",
+                                             "^2",
                                              "^2",
                                              "mov_ax_di",
                                              "pop_al",
@@ -234,9 +242,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for a",
+                                             "sub_bp$offset_into_ax",
+                                             "^3",
                                              "^3",
                                              "mov_ax_di",
                                              "pop_al",
@@ -249,9 +257,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for a",
+                                             "sub_bp$offset_into_ax",
+                                             "^3",
                                              "^3",
                                              "mov_ax_di",
                                              "pop_al",
@@ -261,9 +269,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for b",
+                                             "sub_bp$offset_into_ax",
+                                             "^2",
                                              "^2",
                                              "mov_ax_di",
                                              "pop_al",
@@ -285,9 +293,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for a",
+                                             "sub_bp$offset_into_ax",
+                                             "^3",
                                              "^3",
                                              "mov_ax_di",
                                              "pop_al",
@@ -297,9 +305,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for b",
+                                             "sub_bp$offset_into_ax",
+                                             "^2",
                                              "^2",
                                              "mov_ax_di",
                                              "pop_al",
@@ -321,9 +329,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for a",
+                                             "sub_bp$offset_into_ax",
+                                             "^3",
                                              "^3",
                                              "mov_ax_di",
                                              "pop_al",
@@ -333,9 +341,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for b",
+                                             "sub_bp$offset_into_ax",
+                                             "^2",
                                              "^2",
                                              "mov_ax_di",
                                              "pop_al",
@@ -357,9 +365,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for a",
+                                             "sub_bp$offset_into_ax",
+                                             "^3",
                                              "^3",
                                              "mov_ax_di",
                                              "pop_al",
@@ -369,9 +377,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for b",
+                                             "sub_bp$offset_into_ax",
+                                             "^2",
                                              "^2",
                                              "mov_ax_di",
                                              "pop_al",
@@ -393,9 +401,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for a",
+                                             "sub_bp$offset_into_ax",
+                                             "^3",
                                              "^3",
                                              "mov_ax_di",
                                              "pop_al",
@@ -421,9 +429,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for a",
+                                             "sub_bp$offset_into_ax",
+                                             "^3",
                                              "^3",
                                              "mov_ax_di",
                                              "pop_al",
@@ -449,9 +457,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for a",
+                                             "sub_bp$offset_into_ax",
+                                             "^3",
                                              "^3",
                                              "mov_ax_di",
                                              "pop_al",
@@ -477,9 +485,9 @@ TEST(IR, ir_variableExpressions) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for a",
+                                             "sub_bp$offset_into_ax",
+                                             "^3",
                                              "^3",
                                              "mov_ax_di",
                                              "pop_al",
@@ -510,16 +518,19 @@ TEST(IR, ir_variableExpressions) {
                                              "htl"};
 
   EXPECT_EQ(ir.size(), expectedResult.size());
-  if (ir.size() != expectedResult.size()) {
+  if (ir.size() != expectedResult.size())
+  {
     return;
   }
 
-  for (size_t i = 0; i < ir.size(); i++) {
-    EXPECT_EQ(ir[i], expectedResult[i]);
+  for (size_t i = 0; i < ir.size(); i++)
+  {
+    EXPECT_EQ(ir[i], expectedResult[i]);    
   }
 }
 
-TEST(IR, ir_ifNoElse) {
+TEST(IR, ir_ifNoElse)
+{
   std::string filename = basePath + "ifNoElseTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   EXPECT_TRUE(validToks);
@@ -559,9 +570,9 @@ TEST(IR, ir_ifNoElse) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for x",
+                                             "sub_bp$offset_into_ax",
+                                             "^1",
                                              "^1",
                                              "mov_ax_di",
                                              "pop_al",
@@ -579,16 +590,19 @@ TEST(IR, ir_ifNoElse) {
                                              "htl"};
 
   EXPECT_EQ(ir.size(), expectedResult.size());
-  if (ir.size() != expectedResult.size()) {
+  if (ir.size() != expectedResult.size())
+  {
     return;
   }
 
-  for (size_t i = 0; i < ir.size(); i++) {
+  for (size_t i = 0; i < ir.size(); i++)
+  {
     EXPECT_EQ(ir[i], expectedResult[i]);
   }
 }
 
-TEST(IR, ir_ifElse) {
+TEST(IR, ir_ifElse)
+{
   std::string filename = basePath + "ifElseTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   EXPECT_TRUE(validToks);
@@ -628,9 +642,9 @@ TEST(IR, ir_ifElse) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for x",
+                                             "sub_bp$offset_into_ax",
+                                             "^1",
                                              "^1",
                                              "mov_ax_di",
                                              "pop_al",
@@ -656,9 +670,9 @@ TEST(IR, ir_ifElse) {
                                              "push_al",
                                              "mov_ss_ax",
                                              "mov_ax_ds",
-                                             "mov_bp_ax",
-                                             "sub_operand_al",
                                              "# displacement for y",
+                                             "sub_bp$offset_into_ax",
+                                             "^1", 
                                              "^1",
                                              "mov_ax_di",
                                              "pop_al",
@@ -676,16 +690,19 @@ TEST(IR, ir_ifElse) {
                                              "htl"};
 
   EXPECT_EQ(ir.size(), expectedResult.size());
-  if (ir.size() != expectedResult.size()) {
+  if (ir.size() != expectedResult.size())
+  {
     return;
   }
 
-  for (size_t i = 0; i < ir.size(); i++) {
+  for (size_t i = 0; i < ir.size(); i++)
+  {
     EXPECT_EQ(ir[i], expectedResult[i]);
   }
 }
 
-TEST(IR, ir_while) {
+TEST(IR, ir_while)
+{
   std::string filename = basePath + "whileTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   EXPECT_TRUE(validToks);
@@ -726,9 +743,9 @@ TEST(IR, ir_while) {
       "push_al",
       "mov_ss_ax",
       "mov_ax_ds",
-      "mov_bp_ax",
-      "sub_operand_al",
       "# displacement for x",
+      "sub_bp$offset_into_ax",
+      "^1",
       "^1",
       "mov_ax_di",
       "pop_al",
@@ -749,16 +766,19 @@ TEST(IR, ir_while) {
       "htl"};
 
   EXPECT_EQ(ir.size(), expectedResult.size());
-  if (ir.size() != expectedResult.size()) {
+  if (ir.size() != expectedResult.size())
+  {
     return;
   }
 
-  for (size_t i = 0; i < ir.size(); i++) {
+  for (size_t i = 0; i < ir.size(); i++)
+  {
     EXPECT_EQ(ir[i], expectedResult[i]);
   }
 }
 
-TEST(IR, ir_emptyVoid) {
+TEST(IR, ir_emptyVoid)
+{
   std::string filename = basePath + "emptyVoidTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   EXPECT_TRUE(validToks);
@@ -800,17 +820,20 @@ TEST(IR, ir_emptyVoid) {
       "htl"};
 
   EXPECT_EQ(ir.size(), expectedResult.size());
-  if (ir.size() != expectedResult.size()) {
+  if (ir.size() != expectedResult.size())
+  {
     Print(ir);
     return;
   }
 
-  for (size_t i = 0; i < ir.size(); i++) {
+  for (size_t i = 0; i < ir.size(); i++)
+  {
     EXPECT_EQ(ir[i], expectedResult[i]);
   }
 }
 
-TEST(IR, ir_voidWithArgs) {
+TEST(IR, ir_voidWithArgs)
+{
   std::string filename = basePath + "voidWithArgsTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
   EXPECT_TRUE(validToks);
@@ -845,9 +868,9 @@ TEST(IR, ir_voidWithArgs) {
       "push_al",
       "mov_ss_ax",
       "mov_ax_ds",
-      "mov_bp_ax",
-      "add_operand_al",
       "# displacement for a",
+      "add_bp$offset_into_ax",
+      "^3",
       "^3",
       "mov_ax_di",
       "pop_al",
@@ -857,9 +880,9 @@ TEST(IR, ir_voidWithArgs) {
       "push_al",
       "mov_ss_ax",
       "mov_ax_ds",
-      "mov_bp_ax",
-      "add_operand_al",
       "# displacement for b",
+      "add_bp$offset_into_ax",
+      "^4",
       "^4",
       "mov_ax_di",
       "pop_al",
@@ -868,9 +891,9 @@ TEST(IR, ir_voidWithArgs) {
       "push_al",
       "mov_ss_ax",
       "mov_ax_ds",
-      "mov_bp_ax",
-      "sub_operand_al",
       "# displacement for k",
+      "sub_bp$offset_into_ax",
+      "^1",
       "^1",
       "mov_ax_di",
       "pop_al",
@@ -891,9 +914,9 @@ TEST(IR, ir_voidWithArgs) {
       "push_al",
       "mov_ss_ax",
       "mov_ax_ds",
-      "mov_bp_ax",
-      "sub_operand_al",
       "# displacement for x",
+      "sub_bp$offset_into_ax",
+      "^2",
       "^2",
       "mov_ax_di",
       "pop_al",
@@ -910,9 +933,9 @@ TEST(IR, ir_voidWithArgs) {
       "push_al",
       "mov_ss_ax",
       "mov_ax_ds",
-      "mov_bp_ax",
-      "sub_operand_al",
       "# displacement for y",
+      "sub_bp$offset_into_ax",
+      "^1",
       "^1",
       "mov_ax_di",
       "pop_al",
@@ -926,9 +949,9 @@ TEST(IR, ir_voidWithArgs) {
       "push_al",
       "mov_ss_ax",
       "mov_ax_ds",
-      "mov_bp_ax",
-      "sub_operand_al",
       "# displacement for y",
+      "sub_bp$offset_into_ax",
+      "^1",
       "^1",
       "mov_ax_di",
       "pop_al",
@@ -938,9 +961,9 @@ TEST(IR, ir_voidWithArgs) {
       "push_al",
       "mov_ss_ax",
       "mov_ax_ds",
-      "mov_bp_ax",
-      "sub_operand_al",
       "# displacement for x",
+      "sub_bp$offset_into_ax",
+      "^2",
       "^2",
       "mov_ax_di",
       "pop_al",
@@ -960,11 +983,13 @@ TEST(IR, ir_voidWithArgs) {
       "htl"};
 
   EXPECT_EQ(ir.size(), expectedResult.size());
-  if (ir.size() != expectedResult.size()) {
+  if (ir.size() != expectedResult.size())
+  {
     return;
   }
 
-  for (size_t i = 0; i < ir.size(); i++) {
+  for (size_t i = 0; i < ir.size(); i++)
+  {
     EXPECT_EQ(ir[i], expectedResult[i]);
   }
 }

@@ -2,8 +2,10 @@
 #include <tuple>
 #include <unordered_map>
 
-std::string OpcodeToString(Opcode const opcode) {
-  switch (opcode) {
+std::string OpcodeToString(Opcode const opcode)
+{
+  switch (opcode)
+  {
     // F0
   case Opcode::mov_al_ah:
     return "mov al, ah";
@@ -57,6 +59,8 @@ std::string OpcodeToString(Opcode const opcode) {
     return "ldpsr";
   case Opcode::stum:
     return "stum";
+  case Opcode::mov_bp_ax:
+    return "mov_bp_ax";
     // F1
   case Opcode::mov_ds$di_al:
     return "mov ds:(di), al";
@@ -154,6 +158,10 @@ std::string OpcodeToString(Opcode const opcode) {
     return "jmp selector:offset";
   case Opcode::call_selector$offset:
     return "call selector:offset";
+  case Opcode::add_bp$offset_into_ax:
+    return "add_bp$offset_into_ax";
+  case Opcode::sub_bp$offset_into_ax:
+    return "sub_bp$offset_into_ax";
   default:
     break;
   }
@@ -189,6 +197,7 @@ std::unordered_map<std::string, Opcode> strToOpcode = {
     {"sti", Opcode::sti},
     {"ldpsr", Opcode::ldpsr},
     {"stum", Opcode::stum},
+    {"mov_bp_ax", Opcode::mov_bp_ax},
     // F1
     {"mov_ds$di_al", Opcode::mov_ds$di_al},
     {"cmp_ds$di_al", Opcode::cmp_ds$di_al},
@@ -241,11 +250,14 @@ std::unordered_map<std::string, Opcode> strToOpcode = {
     // F7
     {"jmp_selector$offset", Opcode::jmp_selector$offset},
     {"call_selector$offset", Opcode::call_selector$offset},
-    {"mov_bp_ax", Opcode::mov_bp_ax}};
+    {"add_bp$offset_into_ax", Opcode::add_bp$offset_into_ax},
+    {"sub_bp$offset_into_ax", Opcode::sub_bp$offset_into_ax}};
 
-std::tuple<bool, Opcode> StringToOpcode(std::string const &str) {
+std::tuple<bool, Opcode> StringToOpcode(std::string const &str)
+{
 
-  if (strToOpcode.find(str) == strToOpcode.end()) {
+  if (strToOpcode.find(str) == strToOpcode.end())
+  {
     return {false, (Opcode)0xb11111111};
   }
 

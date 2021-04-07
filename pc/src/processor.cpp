@@ -78,6 +78,8 @@ Star GetFirstExecutionState(const std::bitset<8> &code)
     return Star::ldax2;
   case Opcode::mov_di_ax:
     return Star::ldax3;
+  case Opcode::mov_bp_ax:
+    return Star::ldax4;
   case Opcode::mov_al_ds$di:
   case Opcode::mov_al_ds$offset:
     return Star::ld0;
@@ -152,6 +154,9 @@ Star GetFirstExecutionState(const std::bitset<8> &code)
     return Star::ldpsr0;
   case Opcode::stum:
     return Star::stum0;
+  case Opcode::add_bp$offset_into_ax:
+  case Opcode::sub_bp$offset_into_ax:
+    return Star::arit_log1;
   }
   return Star::nop0;
 }
@@ -199,6 +204,9 @@ void Processor::OnClock()
       break;
     case Instructions::Format::F7:
       m_MJR = Star::fetchF7_0;
+      break;
+    case Instructions::Format::F8:
+      m_MJR = Star::fetchF8_0;
       break;
     }
     break;
@@ -369,6 +377,29 @@ void Processor::OnClock()
     m_MR_ = true;
     m_STAR = m_MJR;
     break;
+  case Star::fetchF8_0:
+    m_MAR = ComputePhysicalAddress(m_CS, m_IP);
+    m_IP = (m_IP.to_ulong() + 1);
+    m_MR_ = false;
+    m_STAR = Star::fetchF8_1;
+    break;
+  case Star::fetchF8_1:
+    m_STAR = Star::fetchF8_2;
+    break;
+  case Star::fetchF8_2:
+    m_AH = m_d7_d0;
+    m_MAR = ComputePhysicalAddress(m_CS, m_IP);
+    m_IP = (m_IP.to_ulong() + 1);
+    m_STAR = Star::fetchF8_3;
+    break;
+  case Star::fetchF8_3:
+    m_STAR = Star::fetchF8_4;
+    break;
+  case Star::fetchF8_4:
+    m_AL = m_d7_d0;
+    m_MR_ = true;
+    m_STAR = m_MJR;
+    break;
   case Star::nvi0:
     m_SOURCE = IsInstructionValid(m_OPCODE, GetUS()) == 0b00 ? 0x06 : 0x05;
     m_STAR = Star::nvi0;
@@ -425,6 +456,11 @@ void Processor::OnClock()
     m_AL = GetPart(m_DI, false);
     m_STAR = GetIF() ? Star::pre_tipo0 : Star::fetch0;
     break;
+  case Star::ldax4:
+    m_AH = GetPart(m_BP, true);
+    m_AL = GetPart(m_BP, false);
+    m_STAR = GetIF() ? Star::pre_tipo0 : Star::fetch0;
+    break;
   case Star::ld0:
     m_MAR = ComputePhysicalAddress(m_DEST_SEL, m_DEST_OFF);
     m_MBR = m_AL;
@@ -455,6 +491,10 @@ void Processor::OnClock()
     break;
   case Star::arit_log0:
     ExecuteALU();
+    m_STAR = GetIF() ? Star::pre_tipo0 : Star::fetch0;
+    break;
+  case Star::arit_log1:
+    ExecuteALU16();
     m_STAR = GetIF() ? Star::pre_tipo0 : Star::fetch0;
     break;
   case Star::ldal1:
@@ -522,6 +562,7 @@ void Processor::OnClock()
   case Star::call5:
     m_MW_ = true;
     m_SP = m_SP.to_ulong() - 1;
+    m_BP = m_SP;
     m_IP = m_DEST_OFF;
     m_STAR = m_OPCODE == Instructions::CALLF_OPCODE ? Star::call6 : Star::call12;
     break;
@@ -551,6 +592,7 @@ void Processor::OnClock()
   case Star::call11:
     m_MW_ = true;
     m_SP = m_SP.to_ulong() - 1;
+    m_BP = m_SP;
     m_CS = m_DEST_SEL;
     m_STAR = Star::call12;
     break;
@@ -861,6 +903,8 @@ void Processor::OnReset()
   m_F = 0b000000;
   m_CS = 0xF000;
   m_IP = 0x0000;
+  m_SP = 0x0000;
+  m_BP = 0x0000;
   m_STAR = Star::fetch0;
 }
 
@@ -876,6 +920,7 @@ Processor::Status Processor::GetStatus() const
   status.source = m_SOURCE.to_ulong();
   status.ss = m_SS.to_ulong();
   status.sp = m_SP.to_ulong();
+  status.bp = m_BP.to_ulong();
   status.ds = m_DS.to_ulong();
   status.di = m_DI.to_ulong();
   status.destSel = m_DEST_SEL.to_ulong();
@@ -1096,4 +1141,24 @@ void Processor::ExecuteALU()
       SetOF(!GetCF() && !GetZF());
     }
   }
+}
+
+void Processor::ExecuteALU16()
+{
+  // I added the alu16 because working without a bp registry was driving me crazy
+  // maybe I'll convert it to use bit operations at some point
+  auto const ax = Concat(m_AH, m_AL).to_ulong();
+  auto const bp = m_BP.to_ulong();
+  int result;
+  if (m_OPCODE == (int)Opcode::add_bp$offset_into_ax)
+  {
+    result = ax + bp;
+  }
+  else if (m_OPCODE == (int)Opcode::sub_bp$offset_into_ax)
+  {
+    result = bp - ax;
+  }
+
+  m_AH = result >> 8;
+  m_AL = result;
 }

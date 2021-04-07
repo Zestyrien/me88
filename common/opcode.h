@@ -2,7 +2,8 @@
 
 #include <string>
 
-enum class Opcode {
+enum class Opcode
+{
   // F0
   mov_al_ah = 0b00000001,
   mov_ah_al = 0b00000010,
@@ -30,6 +31,7 @@ enum class Opcode {
   sti = 0b00011000,
   ldpsr = 0b00011001,
   stum = 0b00011010,
+  mov_bp_ax = 0b00011011,
 
   // F1
   mov_ds$di_al = 0b00100000,
@@ -89,8 +91,11 @@ enum class Opcode {
   // F7
   jmp_selector$offset = 0b11100000,
   call_selector$offset = 0b11100001,
-  mov_bp_ax = 0b11100010
+  
+  // F8
+  add_bp$offset_into_ax = 0b11110010,
+  sub_bp$offset_into_ax = 0b11110011
 };
 
 std::string OpcodeToString(Opcode const opcode);
-std::tuple<bool, Opcode> StringToOpcode(std::string const& str);
+std::tuple<bool, Opcode> StringToOpcode(std::string const &str);

@@ -3,6 +3,11 @@
 
 Instructions::Format Instructions::GetFormatType(const std::bitset<8> &opcode)
 {
+  if (opcode[7] && opcode[6] && opcode[5] && opcode[4])
+  {
+    return Format::F8;
+  }
+  
   return (Format)(opcode[7] * 4 + opcode[6] * 2 + opcode[5]);
 }
 

@@ -9,6 +9,6 @@ int main(int argc, char *argv[])
     debug = argv[1] == std::string("-d") || argv[1] == std::string("-D");
   }
 
-  microPC::PowerOn(debug);
+  microPC::PowerOn(true);
   return 0;
 }

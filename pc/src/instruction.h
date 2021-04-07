@@ -29,7 +29,8 @@ namespace Instructions
     F4 = 0b100,
     F5 = 0b101,
     F6 = 0b110,
-    F7 = 0b111
+    F7 = 0b111,
+    F8 = 0b1111
   };
 
   Format GetFormatType(const std::bitset<8> &opcode);

@@ -60,7 +60,8 @@ std::vector<std::string> ParseExpression8Bits(std::shared_ptr<Node> const &node,
     code.push_back("mov_ss_ax");
     code.push_back("mov_ax_ds");
     // set di
-    code.push_back("mov_bp_ax");
+    code.push_back("# displacement for " + variable);
+
     // sub displacement to base pointer if it's a new varialble in the scope
     // add it if it's a function argument
     size_t displacement = 0;
@@ -70,18 +71,17 @@ std::vector<std::string> ParseExpression8Bits(std::shared_ptr<Node> const &node,
       // 1 is the minimum required
       // 2 is the size of the return address
       //  TO DO double check if need to save more stuff on function call
-      displacement =
-          symbols.GetFunctionArgumentIndex(variable, scopeId) + 1 + 2;
-      code.push_back("add_operand_al");
+      displacement = symbols.GetFunctionArgumentIndex(variable, scopeId) + 1 + 2;
+      code.push_back("add_bp$offset_into_ax");
     }
     else
     {
       // variable declared in the scope are under bp
-      code.push_back("sub_operand_al");
+      code.push_back("sub_bp$offset_into_ax");
       displacement = stackDisplacement[scopeId][variable];
     }
 
-    code.push_back("# displacement for " + variable);
+    code.push_back("^" + std::to_string(displacement));
     code.push_back("^" + std::to_string(displacement));
     code.push_back("mov_ax_di");
     // restore al
@@ -610,7 +610,11 @@ Parser::ParseMachineCode(std::vector<std::string> const &ir)
 
     if (entry.rfind("^", 0) == 0)
     {
-      machinecode.push_back(atoi(entry.substr(1, entry.size()).c_str()));
+      const auto displacement = atoi(entry.substr(1, entry.size()).c_str());
+
+      machinecode.push_back(displacement >> 8);
+      machinecode.push_back(displacement);
+      skipNext = true;
       continue;
     }
 

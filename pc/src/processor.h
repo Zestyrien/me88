@@ -47,6 +47,11 @@ enum class Star
   fetchF7_6,
   fetchF7_7,
   fetchF7_8,
+  fetchF8_0,
+  fetchF8_1,
+  fetchF8_2,
+  fetchF8_3,
+  fetchF8_4,
   nvi0, //something went wrong
 
   //execution phase
@@ -62,6 +67,7 @@ enum class Star
   ldax1, //MOV SS,AX
   ldax2, //MOV SP,AX
   ldax3, //MOV DI,AX
+  ldax4, //MOV BP,AX
 
   //MOV AL,DS:(DI)
   ld0,
@@ -176,7 +182,10 @@ enum class Star
 
   //interruption fetch phase
   pre_tipo0,
-  pre_tipo1
+  pre_tipo1,
+
+  //special F8 16 bit instructions
+  arit_log1, //add_bp$offset_into_a, sub_bp$offset_into_ax
 };
 
 class Processor
@@ -260,4 +269,5 @@ private:
 
   bool IsConditionMatch();
   void ExecuteALU();
+  void ExecuteALU16();
 };
