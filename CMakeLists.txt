@@ -26,6 +26,7 @@ add_executable(
   me88CompilerTests 
   ./common/opcode.cpp
   ./compiler/src/tests/mainTest.cpp 
+  ./compiler/src/tests/filereader.cpp
   ./compiler/src/lexy.cpp
   ./compiler/src/token.cpp
   ./compiler/src/tree.cpp

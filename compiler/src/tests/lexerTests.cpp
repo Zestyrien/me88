@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <unordered_map>
 
+#include "common.h"
 #include "../lexy.h"
 #include "../token.h"
 
@@ -14,7 +15,7 @@ TEST(Lexer, GetTokensFromFile_InvalidFile)
 
 TEST(Lexer, GetTokensFromFile_ValidFile_AllTokens)
 {
-  std::string filename = "../compiler/src/tests/files/lexerAllTokenTest.F7";
+  std::string filename = filesPath + "lexerAllTokenTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
   EXPECT_TRUE(validToks);

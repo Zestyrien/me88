@@ -9,8 +9,6 @@ TEST(AST, CreateAST_Empty)
   std::string filename = "fakeTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
-  EXPECT_FALSE(validToks);
-
   auto [validProg, AST] = CreateAST(tokens);
 
   EXPECT_TRUE(validProg);
@@ -20,8 +18,6 @@ TEST(AST, CreateAST_VariableDeclaration)
 {
   std::string filename = "../compiler/src/tests/files/ast/variableDeclarationTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
-
-  EXPECT_TRUE(validToks);
 
   auto [validProg, AST] = CreateAST(tokens);
 
@@ -54,8 +50,6 @@ TEST(AST, CreateAST_VariableDeclarationAssignement)
   std::string filename =
       "../compiler/src/tests/files/ast/variableDeclarationAssignementTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
-
-  EXPECT_TRUE(validToks);
 
   auto [validProg, AST] = CreateAST(tokens);
 
@@ -94,8 +88,6 @@ TEST(AST, CreateAST_IfNoElse)
 {
   std::string filename = "../compiler/src/tests/files/ast/ifNoElseTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
-
-  EXPECT_TRUE(validToks);
 
   auto [validProg, AST] = CreateAST(tokens);
 
@@ -146,8 +138,6 @@ TEST(AST, CreateAST_IfElse)
 {
   std::string filename = "../compiler/src/tests/files/ast/ifElseTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
-
-  EXPECT_TRUE(validToks);
 
   auto [validProg, AST] = CreateAST(tokens);
 
@@ -211,8 +201,6 @@ TEST(AST, CreateAST_While)
   std::string filename = "../compiler/src/tests/files/ast/whileTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
 
-  EXPECT_TRUE(validToks);
-
   auto [validProg, AST] = CreateAST(tokens);
 
   EXPECT_TRUE(validProg);
@@ -247,8 +235,6 @@ TEST(AST, Create_EmptyVoid)
 {
   std::string filename = "../compiler/src/tests/files/ast/emptyVoidTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
-
-  EXPECT_TRUE(validToks);
 
   auto [validProg, AST] = CreateAST(tokens);
 
@@ -294,8 +280,6 @@ TEST(AST, Create_VoidWithArgs)
 {
   std::string filename = "../compiler/src/tests/files/ast/voidWithArgsTest.F7";
   auto [validToks, tokens] = Lexer::GetTokensFromFile(filename);
-
-  EXPECT_TRUE(validToks);
 
   auto [validProg, AST] = CreateAST(tokens);
 

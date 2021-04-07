@@ -1,0 +1,48 @@
+#
+# whileTest.F7
+#
+
+# start scope push variables
+
+# parse while statement from line 1
+# while loop
+# load number in al
+mov_operand_al
+%1
+cmp_operand_al
+%1
+jne_cs_offset
+off+18
+off+18
+# start scope push variables
+push_al
+
+# parse expression from line 2
+# load number in al
+mov_operand_al
+%5
+# assignement expression for x
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for x
+sub_bp$offset_into_ax
+^1
+^1
+mov_ax_di
+pop_al
+# move value in variable
+mov_al_ds$di
+mov_operand_al
+%1
+
+# end scope clean stack
+pop_al
+
+jmp_cs_offset
+off-25
+off-25
+# end scope clean stack
+
+# end program
+htl

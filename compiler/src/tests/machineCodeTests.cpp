@@ -1,28 +1,16 @@
 #include <gtest/gtest.h>
 
+#include "common.h"
 #include "../ast.h"
 #include "../lexy.h"
 #include "../parser.h"
 #include "../semantic.h"
 
-#include <iostream>
-
-// std::string const basePath = "../compiler/src/tests/files/ast/";
-
-auto const PrintMC = [](std::vector<std::bitset<8>> const &code) {
-  for (auto const &entry : code)
-  {
-    std::cout << entry.to_string() << std::endl;
-  }
-};
 TEST(machineCode, mc_variableDeclaration)
 {
-  std::string filename = basePath + "variableDeclarationTest.F7";
+  std::string filename = astPath + "variableDeclarationTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
-  EXPECT_TRUE(validToks);
-
   auto const [validAST, AST] = CreateAST(tokens);
-  EXPECT_TRUE(validAST);
 
   auto const [validSemantic, symbols] = AnalyzeSemantic(AST);
   EXPECT_TRUE(validSemantic);
@@ -35,7 +23,6 @@ TEST(machineCode, mc_variableDeclaration)
   EXPECT_EQ(machineCode.size(), expectedResult.size());
   if (machineCode.size() != expectedResult.size())
   {
-    PrintMC(machineCode);
     return;
   }
 
@@ -47,24 +34,16 @@ TEST(machineCode, mc_variableDeclaration)
 
 TEST(machineCode, mc_DeclarationAssignement)
 {
-  std::string filename = basePath + "variableDeclarationAssignementTest.F7";
+  std::string filename = astPath + "variableDeclarationAssignementTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
-  EXPECT_TRUE(validToks);
-
   auto const [validAST, AST] = CreateAST(tokens);
-  EXPECT_TRUE(validAST);
 
   auto const [validSemantic, symbols] = AnalyzeSemantic(AST);
   EXPECT_TRUE(validSemantic);
 
-  auto const ir =
-      Parser::ParseIR("variableDeclarationAssignementTest.F7", AST, symbols);
+  auto const ir = Parser::ParseIR("variableDeclarationAssignementTest.F7", AST, symbols);
 
-  std::vector<std::bitset<8>> expectedResult = {
-      0b00001011, 0b01100000, 0b00000101, 0b00001011, 0b00000100,
-      0b00000111, 0b11110011, 0b00000000, 0b00000001, 0b00001010,
-      0b00001100, 0b01000000, 0b01100000, 0b00000001, 0b00001100,
-      0b00010101};
+  std::vector<std::bitset<8>> expectedResult = ReadFileAsBitset(binPath + "variableDeclarationAssignementTest.F7.ir.bin");
 
   auto const machineCode = Parser::ParseMachineCode(ir);
 
@@ -82,12 +61,9 @@ TEST(machineCode, mc_DeclarationAssignement)
 
 TEST(machineCode, mc_variableExpressions)
 {
-  std::string filename = basePath + "variableExpressionsTest.F7";
+  std::string filename = astPath + "variableExpressionsTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
-  EXPECT_TRUE(validToks);
-
   auto const [validAST, AST] = CreateAST(tokens);
-  EXPECT_TRUE(validAST);
 
   auto const [validSemantic, symbols] = AnalyzeSemantic(AST);
   EXPECT_TRUE(validSemantic);
@@ -96,65 +72,7 @@ TEST(machineCode, mc_variableExpressions)
 
   auto const machineCode = Parser::ParseMachineCode(ir);
 
-  std::vector<std::bitset<8>> expectedResult = {
-      0b00001011, 0b00001011, 0b00001011, 0b01100000, 0b00000101,
-      0b00001011, 0b00000100, 0b00000111, 0b11110011, 0b00000000,
-      0b00000010, 0b00001010, 0b00001100, 0b01000000, 0b01100000,
-      0b00000001, 0b01100000, 0b01100100, 0b00001011, 0b00000100,
-      0b00000111, 0b11110011, 0b00000000, 0b00000001, 0b00001010,
-      0b00001100, 0b01000000, 0b01100000, 0b00000001, 0b00001011,
-      0b00000100, 0b00000111, 0b11110011, 0b00000000, 0b00000001,
-      0b00001010, 0b00001100, 0b00100000, 0b00001011, 0b00000100,
-      0b00000111, 0b11110011, 0b00000000, 0b00000010, 0b00001010,
-      0b00001100, 0b00100010, 0b00001011, 0b00000100, 0b00000111,
-      0b11110011, 0b00000000, 0b00000011, 0b00001010, 0b00001100,
-      0b01000000, 0b01100000, 0b00000001, 0b00001011, 0b00000100,
-      0b00000111, 0b11110011, 0b00000000, 0b00000011, 0b00001010,
-      0b00001100, 0b00100000, 0b00001011, 0b00000100, 0b00000111,
-      0b11110011, 0b00000000, 0b00000010, 0b00001010, 0b00001100,
-      0b00100011, 0b01100010, 0b00000011, 0b00001011, 0b00000100,
-      0b00000111, 0b11110011, 0b00000000, 0b00000011, 0b00001010,
-      0b00001100, 0b01000000, 0b01100000, 0b00000001, 0b00001011,
-      0b00000100, 0b00000111, 0b11110011, 0b00000000, 0b00000011,
-      0b00001010, 0b00001100, 0b00100000, 0b00001011, 0b00000100,
-      0b00000111, 0b11110011, 0b00000000, 0b00000010, 0b00001010,
-      0b00001100, 0b00100001, 0b11000011, 0b00000000, 0b01110000,
-      0b01100000, 0b00000000, 0b11000000, 0b00000000, 0b01110010,
-      0b01100000, 0b00000001, 0b00001011, 0b00000100, 0b00000111,
-      0b11110011, 0b00000000, 0b00000011, 0b00001010, 0b00001100,
-      0b00100000, 0b00001011, 0b00000100, 0b00000111, 0b11110011,
-      0b00000000, 0b00000010, 0b00001010, 0b00001100, 0b00100001,
-      0b11000001, 0b00000000, 0b10001100, 0b01100000, 0b00000000,
-      0b11000000, 0b00000000, 0b10001110, 0b01100000, 0b00000001,
-      0b00001011, 0b00000100, 0b00000111, 0b11110011, 0b00000000,
-      0b00000011, 0b00001010, 0b00001100, 0b00100000, 0b00001011,
-      0b00000100, 0b00000111, 0b11110011, 0b00000000, 0b00000010,
-      0b00001010, 0b00001100, 0b00100001, 0b11000110, 0b00000000,
-      0b10101000, 0b01100000, 0b00000000, 0b11000000, 0b00000000,
-      0b10101010, 0b01100000, 0b00000001, 0b00001011, 0b00000100,
-      0b00000111, 0b11110011, 0b00000000, 0b00000011, 0b00001010,
-      0b00001100, 0b00100000, 0b00001011, 0b00000100, 0b00000111,
-      0b11110011, 0b00000000, 0b00000010, 0b00001010, 0b00001100,
-      0b00100001, 0b11001100, 0b00000000, 0b11000100, 0b01100000,
-      0b00000000, 0b11000000, 0b00000000, 0b11000110, 0b01100000,
-      0b00000001, 0b00001011, 0b00000100, 0b00000111, 0b11110011,
-      0b00000000, 0b00000011, 0b00001010, 0b00001100, 0b00100000,
-      0b01100001, 0b00000101, 0b11000011, 0b00000000, 0b11011001,
-      0b01100000, 0b00000000, 0b11000000, 0b00000000, 0b11011011,
-      0b01100000, 0b00000001, 0b00001011, 0b00000100, 0b00000111,
-      0b11110011, 0b00000000, 0b00000011, 0b00001010, 0b00001100,
-      0b00100000, 0b01100001, 0b00000110, 0b11000001, 0b00000000,
-      0b11101110, 0b01100000, 0b00000000, 0b11000000, 0b00000000,
-      0b11110000, 0b01100000, 0b00000001, 0b00001011, 0b00000100,
-      0b00000111, 0b11110011, 0b00000000, 0b00000011, 0b00001010,
-      0b00001100, 0b00100000, 0b01100001, 0b00000111, 0b11000110,
-      0b00000001, 0b00000011, 0b01100000, 0b00000000, 0b11000000,
-      0b00000001, 0b00000101, 0b01100000, 0b00000001, 0b00001011,
-      0b00000100, 0b00000111, 0b11110011, 0b00000000, 0b00000011,
-      0b00001010, 0b00001100, 0b00100000, 0b01100001, 0b00001000,
-      0b11001100, 0b00000001, 0b00011000, 0b01100000, 0b00000000,
-      0b11000000, 0b00000001, 0b00011010, 0b01100000, 0b00000001,
-      0b00001100, 0b00001100, 0b00001100, 0b00010101};
+  std::vector<std::bitset<8>> expectedResult = ReadFileAsBitset(binPath + "variableExpressionsTest.F7.ir.bin");
 
   EXPECT_EQ(machineCode.size(), expectedResult.size());
   if (machineCode.size() != expectedResult.size())
@@ -170,12 +88,9 @@ TEST(machineCode, mc_variableExpressions)
 
 TEST(machineCode, mc_ifNoElse)
 {
-  std::string filename = basePath + "ifNoElseTest.F7";
+  std::string filename = astPath + "ifNoElseTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
-  EXPECT_TRUE(validToks);
-
   auto const [validAST, AST] = CreateAST(tokens);
-  EXPECT_TRUE(validAST);
 
   auto const [validSemantic, symbols] = AnalyzeSemantic(AST);
   EXPECT_TRUE(validSemantic);
@@ -184,12 +99,7 @@ TEST(machineCode, mc_ifNoElse)
 
   auto const machineCode = Parser::ParseMachineCode(ir);
 
-  std::vector<std::bitset<8>> expectedResult = {
-      0b01100000, 0b00000001, 0b01100001, 0b00000001, 0b11001100,
-      0b00000000, 0b00010011, 0b00001011, 0b01100000, 0b00000101,
-      0b00001011, 0b00000100, 0b00000111, 0b11110011, 0b00000000,
-      0b00000001, 0b00001010, 0b00001100, 0b01000000, 0b01100000,
-      0b00000001, 0b00001100, 0b00010101};
+  std::vector<std::bitset<8>> expectedResult = ReadFileAsBitset(binPath + "ifNoElseTest.F7.ir.bin");
 
   EXPECT_EQ(machineCode.size(), expectedResult.size());
   if (machineCode.size() != expectedResult.size())
@@ -205,12 +115,9 @@ TEST(machineCode, mc_ifNoElse)
 
 TEST(machineCode, mc_ifElse)
 {
-  std::string filename = basePath + "ifElseTest.F7";
+  std::string filename = astPath + "ifElseTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
-  EXPECT_TRUE(validToks);
-
   auto const [validAST, AST] = CreateAST(tokens);
-  EXPECT_TRUE(validAST);
 
   auto const [validSemantic, symbols] = AnalyzeSemantic(AST);
   EXPECT_TRUE(validSemantic);
@@ -219,16 +126,7 @@ TEST(machineCode, mc_ifElse)
 
   auto const machineCode = Parser::ParseMachineCode(ir);
 
-  std::vector<std::bitset<8>> expectedResult = {
-      0b01100000, 0b00000001, 0b01100001, 0b00000001, 0b11001100,
-      0b00000000, 0b00010110, 0b00001011, 0b01100000, 0b00000101,
-      0b00001011, 0b00000100, 0b00000111, 0b11110011, 0b00000000,
-      0b00000001, 0b00001010, 0b00001100, 0b01000000, 0b01100000,
-      0b00000001, 0b00001100, 0b11000000, 0b00000000, 0b00100101,
-      0b00001011, 0b01100000, 0b00000111, 0b00001011, 0b00000100,
-      0b00000111, 0b11110011, 0b00000000, 0b00000001, 0b00001010,
-      0b00001100, 0b01000000, 0b01100000, 0b00000001, 0b00001100,
-      0b00010101};
+  std::vector<std::bitset<8>> expectedResult = ReadFileAsBitset(binPath + "ifElseTest.F7.ir.bin");
 
   EXPECT_EQ(machineCode.size(), expectedResult.size());
   if (machineCode.size() != expectedResult.size())
@@ -244,12 +142,9 @@ TEST(machineCode, mc_ifElse)
 
 TEST(machineCode, mc_while)
 {
-  std::string filename = basePath + "whileTest.F7";
+  std::string filename = astPath + "whileTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
-  EXPECT_TRUE(validToks);
-
   auto const [validAST, AST] = CreateAST(tokens);
-  EXPECT_TRUE(validAST);
 
   auto const [validSemantic, symbols] = AnalyzeSemantic(AST);
   EXPECT_TRUE(validSemantic);
@@ -258,13 +153,7 @@ TEST(machineCode, mc_while)
 
   auto const machineCode = Parser::ParseMachineCode(ir);
 
-  std::vector<std::bitset<8>> expectedResult = {
-      0b01100000, 0b00000001, 0b01100001, 0b00000001, 0b11001100,
-      0b00000000, 0b00010110, 0b00001011, 0b01100000, 0b00000101,
-      0b00001011, 0b00000100, 0b00000111, 0b11110011, 0b00000000,
-      0b00000001, 0b00001010, 0b00001100, 0b01000000, 0b01100000,
-      0b00000001, 0b00001100, 0b11000000, 0b00000000, 0b00000000,
-      0b00010101};
+  std::vector<std::bitset<8>> expectedResult = ReadFileAsBitset(binPath + "whileTest.F7.ir.bin");
 
   EXPECT_EQ(machineCode.size(), expectedResult.size());
   if (machineCode.size() != expectedResult.size())
@@ -280,12 +169,9 @@ TEST(machineCode, mc_while)
 
 TEST(machineCode, mc_emptyVoid)
 {
-  std::string filename = basePath + "emptyVoidTest.F7";
+  std::string filename = astPath + "emptyVoidTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
-  EXPECT_TRUE(validToks);
-
   auto const [validAST, AST] = CreateAST(tokens);
-  EXPECT_TRUE(validAST);
 
   auto const [validSemantic, symbols] = AnalyzeSemantic(AST);
   EXPECT_TRUE(validSemantic);
@@ -294,9 +180,7 @@ TEST(machineCode, mc_emptyVoid)
 
   auto const machineCode = Parser::ParseMachineCode(ir);
 
-  std::vector<std::bitset<8>> expectedResult = {
-      0b11000000, 0b00000000, 0b00000001, 0b00010010, 0b11010011,
-      0b00000000, 0b00000010, 0b00010101};
+  std::vector<std::bitset<8>> expectedResult = ReadFileAsBitset(binPath + "emptyVoidTest.F7.ir.bin");
 
   EXPECT_EQ(machineCode.size(), expectedResult.size());
   if (machineCode.size() != expectedResult.size())
@@ -312,12 +196,9 @@ TEST(machineCode, mc_emptyVoid)
 
 TEST(machineCode, mc_voidWithArgs)
 {
-  std::string filename = basePath + "voidWithArgsTest.F7";
+  std::string filename = astPath + "voidWithArgsTest.F7";
   auto const [validToks, tokens] = Lexer::GetTokensFromFile(filename);
-  EXPECT_TRUE(validToks);
-
   auto const [validAST, AST] = CreateAST(tokens);
-  EXPECT_TRUE(validAST);
 
   auto const [validSemantic, symbols] = AnalyzeSemantic(AST);
   EXPECT_TRUE(validSemantic);
@@ -326,27 +207,8 @@ TEST(machineCode, mc_voidWithArgs)
 
   auto const machineCode = Parser::ParseMachineCode(ir);
 
-  std::vector<std::bitset<8>> expectedResult = {
-      0b00001011, 0b00001011, 0b11000000, 0b00000000, 0b00100010,
-      0b00001011, 0b00001011, 0b00000100, 0b00000111, 0b11110010,
-      0b00000000, 0b00000011, 0b00001010, 0b00001100, 0b00100000,
-      0b00001011, 0b00000100, 0b00000111, 0b11110010, 0b00000000,
-      0b00000100, 0b00001010, 0b00001100, 0b00100010, 0b00001011,
-      0b00000100, 0b00000111, 0b11110011, 0b00000000, 0b00000001,
-      0b00001010, 0b00001100, 0b01000000, 0b01100000, 0b00000001,
-      0b00001100, 0b00010010, 0b01100000, 0b00000101, 0b00001011,
-      0b00000100, 0b00000111, 0b11110011, 0b00000000, 0b00000010,
-      0b00001010, 0b00001100, 0b01000000, 0b01100000, 0b00000001,
-      0b01100000, 0b00000111, 0b00001011, 0b00000100, 0b00000111,
-      0b11110011, 0b00000000, 0b00000001, 0b00001010, 0b00001100,
-      0b01000000, 0b01100000, 0b00000001, 0b00001011, 0b00000100,
-      0b00000111, 0b11110011, 0b00000000, 0b00000001, 0b00001010,
-      0b00001100, 0b00100000, 0b00001011, 0b00001011, 0b00000100,
-      0b00000111, 0b11110011, 0b00000000, 0b00000010, 0b00001010,
-      0b00001100, 0b00100000, 0b00001011, 0b11010011, 0b00000000,
-      0b00000100, 0b00001100, 0b00001100, 0b00001100, 0b00001100,
-      0b00010101};
-
+  std::vector<std::bitset<8>> expectedResult = ReadFileAsBitset(binPath + "voidWithArgsTest.F7.ir.bin");
+  
   EXPECT_EQ(machineCode.size(), expectedResult.size());
   if (machineCode.size() != expectedResult.size())
   {

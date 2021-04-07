@@ -1,0 +1,134 @@
+#
+# voidWithArgsTest.F7
+#
+
+# start scope push variables
+push_al
+push_al
+
+# parse function definition from line 1
+# function definition for foo
+jmp_cs_offset
+off+32
+off+32
+@foo
+# start scope push variables
+push_al
+
+# parse expression from line 2
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for a
+add_bp$offset_into_ax
+^3
+^3
+mov_ax_di
+pop_al
+mov_ds$di_al
+# loaded a in AL
+# expression + b
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for b
+add_bp$offset_into_ax
+^4
+^4
+mov_ax_di
+pop_al
+add_ds$di_al
+# assignement expression for k
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for k
+sub_bp$offset_into_ax
+^1
+^1
+mov_ax_di
+pop_al
+# move value in variable
+mov_al_ds$di
+mov_operand_al
+%1
+
+# end scope clean stack
+pop_al
+
+retn
+# parse expression from line 5
+# load number in al
+mov_operand_al
+%5
+# assignement expression for x
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for x
+sub_bp$offset_into_ax
+^2
+^2
+mov_ax_di
+pop_al
+# move value in variable
+mov_al_ds$di
+mov_operand_al
+%1
+
+# parse expression from line 6
+# load number in al
+mov_operand_al
+%7
+# assignement expression for y
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for y
+sub_bp$offset_into_ax
+^1
+^1
+mov_ax_di
+pop_al
+# move value in variable
+mov_al_ds$di
+mov_operand_al
+%1
+
+# parse function call from line 8
+# function call for foo
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for y
+sub_bp$offset_into_ax
+^1
+^1
+mov_ax_di
+pop_al
+mov_ds$di_al
+# loaded y in AL
+push_al
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for x
+sub_bp$offset_into_ax
+^2
+^2
+mov_ax_di
+pop_al
+mov_ds$di_al
+# loaded x in AL
+push_al
+call_cs_offset
+!foo
+!foo
+pop_al
+pop_al
+# end scope clean stack
+pop_al
+pop_al
+
+# end program
+htl

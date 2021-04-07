@@ -1,0 +1,31 @@
+#
+# variableDeclarationAssignementTest.F7
+#
+
+# start scope push variables
+push_al
+
+# parse expression from line 1
+# load number in al
+mov_operand_al
+%5
+# assignement expression for a
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for a
+sub_bp$offset_into_ax
+^1
+^1
+mov_ax_di
+pop_al
+# move value in variable
+mov_al_ds$di
+mov_operand_al
+%1
+
+# end scope clean stack
+pop_al
+
+# end program
+htl

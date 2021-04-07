@@ -1,0 +1,389 @@
+#
+# variableExpressionsTest.F7
+#
+
+# start scope push variables
+push_al
+push_al
+push_al
+
+# parse expression from line 2
+# load number in al
+mov_operand_al
+%5
+# assignement expression for b
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for b
+sub_bp$offset_into_ax
+^2
+^2
+mov_ax_di
+pop_al
+# move value in variable
+mov_al_ds$di
+mov_operand_al
+%1
+
+# parse expression from line 3
+# load number in al
+mov_operand_al
+%100
+# assignement expression for c
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for c
+sub_bp$offset_into_ax
+^1
+^1
+mov_ax_di
+pop_al
+# move value in variable
+mov_al_ds$di
+mov_operand_al
+%1
+
+# parse expression from line 5
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for c
+sub_bp$offset_into_ax
+^1
+^1
+mov_ax_di
+pop_al
+mov_ds$di_al
+# loaded c in AL
+# expression + b
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for b
+sub_bp$offset_into_ax
+^2
+^2
+mov_ax_di
+pop_al
+add_ds$di_al
+# assignement expression for a
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for a
+sub_bp$offset_into_ax
+^3
+^3
+mov_ax_di
+pop_al
+# move value in variable
+mov_al_ds$di
+mov_operand_al
+%1
+
+# parse expression from line 7
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for a
+sub_bp$offset_into_ax
+^3
+^3
+mov_ax_di
+pop_al
+mov_ds$di_al
+# loaded a in AL
+# expression - b
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for b
+sub_bp$offset_into_ax
+^2
+^2
+mov_ax_di
+pop_al
+sub_ds$di_al
+# expression + 3
+add_operand_al
+%3
+# assignement expression for a
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for a
+sub_bp$offset_into_ax
+^3
+^3
+mov_ax_di
+pop_al
+# move value in variable
+mov_al_ds$di
+mov_operand_al
+%1
+
+# parse expression from line 9
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for a
+sub_bp$offset_into_ax
+^3
+^3
+mov_ax_di
+pop_al
+mov_ds$di_al
+# loaded a in AL
+# expression > b
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for b
+sub_bp$offset_into_ax
+^2
+^2
+mov_ax_di
+pop_al
+cmp_ds$di_al
+jb_cs_offset
+off+5
+off+5
+# condition false
+mov_operand_al
+%0
+jmp_cs_offset
+off+2
+off+2
+# condition true
+mov_operand_al
+%1
+
+# parse expression from line 10
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for a
+sub_bp$offset_into_ax
+^3
+^3
+mov_ax_di
+pop_al
+mov_ds$di_al
+# loaded a in AL
+# expression < b
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for b
+sub_bp$offset_into_ax
+^2
+^2
+mov_ax_di
+pop_al
+cmp_ds$di_al
+ja_cs_offset
+off+5
+off+5
+# condition false
+mov_operand_al
+%0
+jmp_cs_offset
+off+2
+off+2
+# condition true
+mov_operand_al
+%1
+
+# parse expression from line 11
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for a
+sub_bp$offset_into_ax
+^3
+^3
+mov_ax_di
+pop_al
+mov_ds$di_al
+# loaded a in AL
+# expression == b
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for b
+sub_bp$offset_into_ax
+^2
+^2
+mov_ax_di
+pop_al
+cmp_ds$di_al
+je_cs_offset
+off+5
+off+5
+# condition false
+mov_operand_al
+%0
+jmp_cs_offset
+off+2
+off+2
+# condition true
+mov_operand_al
+%1
+
+# parse expression from line 12
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for a
+sub_bp$offset_into_ax
+^3
+^3
+mov_ax_di
+pop_al
+mov_ds$di_al
+# loaded a in AL
+# expression != b
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for b
+sub_bp$offset_into_ax
+^2
+^2
+mov_ax_di
+pop_al
+cmp_ds$di_al
+jne_cs_offset
+off+5
+off+5
+# condition false
+mov_operand_al
+%0
+jmp_cs_offset
+off+2
+off+2
+# condition true
+mov_operand_al
+%1
+
+# parse expression from line 14
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for a
+sub_bp$offset_into_ax
+^3
+^3
+mov_ax_di
+pop_al
+mov_ds$di_al
+# loaded a in AL
+# expression > 5
+cmp_operand_al
+%5
+jb_cs_offset
+off+5
+off+5
+# condition false
+mov_operand_al
+%0
+jmp_cs_offset
+off+2
+off+2
+# condition true
+mov_operand_al
+%1
+
+# parse expression from line 15
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for a
+sub_bp$offset_into_ax
+^3
+^3
+mov_ax_di
+pop_al
+mov_ds$di_al
+# loaded a in AL
+# expression < 6
+cmp_operand_al
+%6
+ja_cs_offset
+off+5
+off+5
+# condition false
+mov_operand_al
+%0
+jmp_cs_offset
+off+2
+off+2
+# condition true
+mov_operand_al
+%1
+
+# parse expression from line 16
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for a
+sub_bp$offset_into_ax
+^3
+^3
+mov_ax_di
+pop_al
+mov_ds$di_al
+# loaded a in AL
+# expression == 7
+cmp_operand_al
+%7
+je_cs_offset
+off+5
+off+5
+# condition false
+mov_operand_al
+%0
+jmp_cs_offset
+off+2
+off+2
+# condition true
+mov_operand_al
+%1
+
+# parse expression from line 17
+push_al
+mov_ss_ax
+mov_ax_ds
+# displacement for a
+sub_bp$offset_into_ax
+^3
+^3
+mov_ax_di
+pop_al
+mov_ds$di_al
+# loaded a in AL
+# expression != 8
+cmp_operand_al
+%8
+jne_cs_offset
+off+5
+off+5
+# condition false
+mov_operand_al
+%0
+jmp_cs_offset
+off+2
+off+2
+# condition true
+mov_operand_al
+%1
+
+# end scope clean stack
+pop_al
+pop_al
+pop_al
+
+# end program
+htl

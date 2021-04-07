@@ -1,0 +1,26 @@
+#
+# emptyVoidTest.F7
+#
+
+# start scope push variables
+
+# parse function definition from line 1
+# function definition for foo
+jmp_cs_offset
+off+1
+off+1
+@foo
+# start scope push variables
+
+# end scope clean stack
+
+retn
+# parse function call from line 3
+# function call for foo
+call_cs_offset
+!foo
+!foo
+# end scope clean stack
+
+# end program
+htl

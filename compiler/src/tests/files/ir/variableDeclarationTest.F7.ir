@@ -1,0 +1,10 @@
+#
+# variableDeclarationTest.F7
+#
+
+# start scope push variables
+
+# end scope clean stack
+
+# end program
+htl
